@@ -1,4 +1,18 @@
 body{
-	background: linear-gradient(to bottom right, blue, white);
-
+	background: linear-gradient(to bottom right, #F36B15, #000000);
+}
+#form{
+	backdrop-filter: blur(10px); /* Chrome and Opera */
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 95px;
+}
+#title{
+	color: white;
+	font-family: 'Galada', Cursive;
+	font-size: 6rem;
+}
+#footer{
+	color: white;
+	font-family: 'Galada', Cursive;
+	font-size: 3rem;
 }
