@@ -1,12 +1,8 @@
 
 $(document).ready(function () {
-	
-
 	console.log("login.js is working");
-
 	$('form').submit(function(e){
 		e.preventDefault();
-
 		if ($('#user').val() && $('#user').val()) {
 			let user = $('#user').val();
 			let password = $('#password').val()
@@ -20,8 +16,5 @@ $(document).ready(function () {
                 }
             });
 		}
-
 	});
-
-
 });
