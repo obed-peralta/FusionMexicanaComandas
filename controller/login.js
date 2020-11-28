@@ -20,16 +20,16 @@ $(document).ready(function () {
 							$('#Alert').html(template);
 							break;
 						case "Administrador":
-							console.log(response);
+							$(window).attr('location','view/Administrador.html');
 							break;
 						case "Mesero":
-							console.log(response);
+							$(window).attr('location','view/Mesero.html');
 							break;
 						case "Cocinero":
-							console.log(response);
+							$(window).attr('location','view/Cocinero.html');
 							break;
 						case "Cajero":
-							console.log(response);
+							$(window).attr('location','view/Cajero.html');
 							break;					
 					}               
                 }
