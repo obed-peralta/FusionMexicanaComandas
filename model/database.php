@@ -7,10 +7,8 @@
         'fusionmexicana'    // Database
 	);
 
-	if ($connection) {
-		echo "Database is connected";
-	}else{
-		echo "Database isn't connected";
-	}
+	/*if ($connection) {
+
+	}*/
 
 ?>
