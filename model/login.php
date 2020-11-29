@@ -4,8 +4,7 @@
 	if (isset($_POST['user'])) {
 		$user = $_POST['user'];
 		$password = $_POST['password'];
-<<<<<<< HEAD
-
+		
 		$query = "SELECT id_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
 		
 		$result = mysqli_query($connection, $query);
@@ -56,11 +55,6 @@
 			}
 			
 		}
-
-=======
-        echo $user;
-        echo $password;
->>>>>>> 7df4dfab760d82378186e3a66385312c129da825
 	}
 
 ?>
