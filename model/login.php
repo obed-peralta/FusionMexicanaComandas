@@ -6,8 +6,9 @@
 		
 		$user = $_POST['user'];
 		$password = $_POST['password'];
-
-		$query = "SELECT nombre_usuario, password_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
+        echo $user;
+        echo $password;
+/*		$query = "SELECT nombre_usuario, password_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
 		$result = mysqli_query($connection, $query);
 		if (!$result) {
 			echo "NONE";
@@ -20,9 +21,10 @@
 			
 			$result = mysqli_query($connection, $query);
 			$row = mysqli_fetch_array($result);
-			echo row['cargo'];
-		}
+            echo row['cargo'];
 
+		}
+ */
 	}
 
 ?>
