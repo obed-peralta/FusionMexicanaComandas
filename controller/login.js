@@ -12,7 +12,26 @@ $(document).ready(function () {
                 type: 'POST', //Método por el cuál se envían los datos
                 data: {user, password}, //Parámetro enviado
                 success: function(response){ //Si el servidor devuelve algo...
-					console.log(response);                    
+                	let template='';
+                	// Según la respuesta
+					switch(response){
+						case "false":
+							template="<div class='alert alert-danger' role='alert'>Datos Inválidos</div>";
+							$('#Alert').html(template);
+							break;
+						case "Administrador":
+							$(window).attr('location','view/Administrador.html');
+							break;
+						case "Mesero":
+							$(window).attr('location','view/Mesero.html');
+							break;
+						case "Cocinero":
+							$(window).attr('location','view/Cocinero.html');
+							break;
+						case "Cajero":
+							$(window).attr('location','view/Cajero.html');
+							break;					
+					}               
                 }
             });
 		}
