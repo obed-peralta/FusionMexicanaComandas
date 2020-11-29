@@ -1,12 +1,10 @@
 <?php
 
 	include('database.php');
-
 	if (isset($_POST['user'])) {
-		
 		$user = $_POST['user'];
-		
 		$password = $_POST['password'];
+<<<<<<< HEAD
 
 		$query = "SELECT id_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
 		
@@ -17,6 +15,9 @@
 			die("Error en la BD Login");
 
 		}else{
+
+			$json = array();
+
 			//Si me devuelve más de una fila, es decir que si se validó el login
 			if (mysqli_num_rows($result)>0) { //https://es.stackoverflow.com/questions/159758/registro-vac%C3%ADo-en-sql-con-php
 				
@@ -33,17 +34,33 @@
 				 
 				$cargo = $row['nombre']; // Extraemos el dato del nombre del cargo
 
+				$json[]=array(
+					'id' => $id,
+					'cargo' => $cargo
+				);
+
+				$jsonString = json_encode($json[0]);
 				
-				echo $cargo; //Envíamos el nombre del cargo
+				echo $jsonString; //Envíamos el json con información.
 
 			}else{
+			
+				$json[] = array(
+					'cargo' => 'false'
+				);
+
+				$jsonString = json_encode($json[0]);
 				
-				echo "false"; //No existió el usuario
+				echo $jsonString; //Envíamos el json con false de que no se encontró ningún usuario.
 			
 			}
 			
 		}
 
+=======
+        echo $user;
+        echo $password;
+>>>>>>> 7df4dfab760d82378186e3a66385312c129da825
 	}
 
 ?>
