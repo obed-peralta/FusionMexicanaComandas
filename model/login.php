@@ -2,10 +2,11 @@
 
 	include('database.php');
 	if (isset($_POST['user'])) {
+
 		$user = $_POST['user'];
 		$password = $_POST['password'];
 		
-		$query = "SELECT id_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
+		$query = "SELECT id_usuario,nombre_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
 		
 		$result = mysqli_query($connection, $query);
 
@@ -23,19 +24,21 @@
 				$row = mysqli_fetch_array($result); //Almacenamos el resultado en una lista
 
 				$id = $row['id_usuario']; //Extraemos el id y lo guardamos
+				$nombre = $row['nombre_usuario']; //Extraemos el nombre y lo guardamos
 
-				$query = "SELECT c.nombre FROM cargos c INNER JOIN detalle_usuarios du ON du.id_cargo = c.id_cargo INNER JOIN usuarios u ON u.id_detalle_usuario = du.id_detalle_usuario WHERE u.id_usuario=$id"; //Extraemos el cargo del usuario según su id
+				$query = "SELECT c.id_cargo FROM cargos c INNER JOIN detalle_usuarios du ON du.id_cargo = c.id_cargo INNER JOIN usuarios u ON u.id_detalle_usuario = du.id_detalle_usuario WHERE u.id_usuario=$id"; //Extraemos el cargo del usuario según su id
 				
 				
 				$result = mysqli_query($connection, $query); 
 				
 				$row = mysqli_fetch_array($result); //Almacenamos el resultado en una nueva lista
 				 
-				$cargo = $row['nombre']; // Extraemos el dato del nombre del cargo
+				$idCargo = $row['id_cargo']; // Extraemos el dato del id del cargo
 
 				$json[]=array(
-					'id' => $id,
-					'cargo' => $cargo
+					'id_usuario' => $id,
+					'nombre_usuario' => $nombre,
+					'id_cargo' => $idCargo
 				);
 
 				$jsonString = json_encode($json[0]);
@@ -45,7 +48,7 @@
 			}else{
 			
 				$json[] = array(
-					'cargo' => 'false'
+					'id_cargo' => '-1'
 				);
 
 				$jsonString = json_encode($json[0]);

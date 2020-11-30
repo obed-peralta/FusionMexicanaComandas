@@ -1,8 +1,10 @@
 $(document).ready(function () {
 	console.log('mesero.js is working');
 	if (window.sessionStorage) {
-		if (sessionStorage.getItem('id')) {
-			console.log(sessionStorage.getItem('id'));
+		if (sessionStorage.getItem('id_usuario')) {
+			//console.log(sessionStorage.getItem('id'));
+			let nombre_usuario = sessionStorage.getItem('nombre_usuario');
+			$('#titulo').html("Bienvenido " + nombre_usuario);
 		} else {
 			$(window).attr('location','../index.html');
 		}

@@ -14,52 +14,40 @@ $(document).ready(function () {
                 success: function(response){ //Si el servidor devuelve algo...
                 	let template='';
                 	let json = JSON.parse(response);
-                	let cargo = json.cargo;
-                	console.log(cargo);
                 	// Según el cargo
-					switch(cargo){
-						case "false":
-							template="<div class='alert alert-danger' role='alert'>Datos Inválidos</div>";
-							$('#Alert').html(template);
-							break;
-						case "Administrador":
-							$(window).attr('location','view/Administrador.html');
-							if (window.sessionStorage) {
-								sessionStorage.setItem("id",json.id);
-								sessionStorage.setItem("cargo".json.cargo);
-							} else {
+                	if (window.sessionStorage) {
+						
+						sessionStorage.setItem("id_usuario",json.id_usuario);
+						sessionStorage.setItem("nombre_usuario",json.nombre_usuario);
+						sessionStorage.setItem("id_cargo",json.id_cargo);
 
-							}
-							break;
-						case "Mesero":
-							$(window).attr('location','view/Mesero.html');
-							if (window.sessionStorage) {
-								sessionStorage.setItem("id",json.id);
-								sessionStorage.setItem("cargo".json.cargo);
-							} else {
+						switch(json.id_cargo){
+							case '-1':
+								template="<div class='alert alert-danger' role='alert'>Datos Inválidos</div>";
+								$('#Alert').html(template);
+								sessionStorage.removeItem('id_usuario');
+								sessionStorage.removeItem('nombre_usuario');
+								sessionStorage.removeItem('id_cargo');
+								break;
+							case '1':
+								$(window).attr('location','view/Administrador.html');
+								break;
+							case '2':
+								$(window).attr('location','view/Mesero.html');
+								break;
+							case '3':
+								$(window).attr('location','view/Cocinero.html');
+								break;
+							case '4':
+								$(window).attr('location','view/Cajero.html');
+								break;					
+						}
 
-							}
-							break;
-						case "Cocinero":
-							$(window).attr('location','view/Cocinero.html');
-							if (window.sessionStorage) {
-								sessionStorage.setItem("id",json.id);
-								sessionStorage.setItem("cargo".json.cargo);
-							} else {
+					} else {
 
-							}
-							break;
-						case "Cajero":
-							$(window).attr('location','view/Cajero.html');
-							if (window.sessionStorage) {
-								sessionStorage.setItem("id",json.id);
-								sessionStorage.setItem("cargo".json.cargo);
-							} else {
-
-							}
-							break;					
+						throw new Error('Tu navegador web no soporta sessionStorage!');
+						
 					}
-
                 }
             });
 		}
