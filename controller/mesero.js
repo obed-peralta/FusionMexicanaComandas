@@ -1,6 +1,14 @@
 $(document).ready(function () {
 	console.log('mesero.js is working');
-	if (window.sessionStorage) {
+
+	$('#drawer-demo').drawer({
+		//backdrop: 'static',
+		//keyboard: false,
+		focus: false,
+		show: false
+	});
+
+	/*if (window.sessionStorage) {
 		if (sessionStorage.getItem('id_usuario')) {
 			//console.log(sessionStorage.getItem('id'));
 			let nombre_usuario = sessionStorage.getItem('nombre_usuario');
@@ -10,5 +18,5 @@ $(document).ready(function () {
 		}
 	} else {
 		throw new Error('Tu navegador web no soporta sessionStorage!');
-	}
+	}*/
 });
