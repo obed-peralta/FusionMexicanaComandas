@@ -1,0 +1,10 @@
+.mesas{
+    height: 32rem;
+    padding: 2rem;
+    background-color: bisque;
+    border-radius: 1rem;
+    overflow-y: auto;
+}
+#titulo{
+    font-family: Galada;
+}
