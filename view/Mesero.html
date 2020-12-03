@@ -61,7 +61,7 @@
 						</button>
 					</div>-->
 					<div class="col-12 text-center">
-						<button type="button" class="btn btn-danger" data-dismiss="drawer" aria-label="Close">
+						<button type="button" class="btn btn-danger btn-logout" data-dismiss="drawer" aria-label="Close">
 							Cerrar Sesión
 						</button>
 					</div>
@@ -71,6 +71,125 @@
 	</div>
 	<div class="container">
 		<div class="mesas"></div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-lg">
+		    <div class="modal-content">
+		        <div class="modal-header">
+		        	<h5 class="modal-title" id="exampleModalLabel">Agregar Comanda</h5>
+		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          		<span aria-hidden="true">&times;</span>
+		        	</button>
+  		        </div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-6">
+							<label id="id-mesa"></label>
+						</div>
+						<div class="col-6">
+							<div class="row">
+								<div class="col-6 text-right">
+									<label for="numero_personas">Personas: </label>
+								</div>
+								<div class="col-6">
+									<select class="form-control" id="numero_personas">
+		      							<option value="1">1</option>
+		      							<option value="2">2</option>
+		      							<option value="3">3</option>
+		      							<option value="4">4</option>
+		      							<option value="5">5</option>
+		      							<option value="6">6</option>
+		      							<option value="7">7</option>
+		      							<option value="8">8</option>
+		      							<option value="9">9</option>
+		      							<option value="10">10</option>
+		    						</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<ul class="nav nav-tabs" id="myTab" role="tablist">
+					  			<li class="nav-item" role="presentation">
+					    			<a class="nav-link active" id="menu1" data-toggle="tab" href="#bebidas" role="tab" aria-controls="home" aria-selected="true">Bebidas & Complementos</a>
+					  			</li>
+					   			<li class="nav-item" role="presentation">
+					    			<a class="nav-link" id="menu2" data-toggle="tab" href="#menu" role="tab" aria-controls="profile" aria-selected="false">Menú</a>
+					  			</li>
+					    		<li class="nav-item" role="presentation">
+					    			<a class="nav-link" id="menu3" data-toggle="tab" href="#menu_l" role="tab" aria-controls="contact" aria-selected="false">Menú Ligero</a>
+					 		  	</li>
+					 		  	<li class="nav-item" role="presentation">
+					    			<a class="nav-link" id="menu4" data-toggle="tab" href="#menu_i" role="tab" aria-controls="contact" aria-selected="false">Menú Infantil</a>
+					 		  	</li>
+							</ul>
+							<div class="tab-content p-3" id="myTabContent" style="height: 9rem;overflow-y: auto;">
+					  			<div class="tab-pane fade show active" id="bebidas" role="tabpanel" aria-labelledby="bebidas-tab" style="">
+					  				
+					  			</div>
+					  			<div class="tab-pane fade" id="menu" role="tabpanel" aria-labelledby="menu-tab">
+					  				
+					  			</div>
+					  			<div class="tab-pane fade" id="menu_l" role="tabpanel" aria-labelledby="menu_l-tab">
+					  				
+					  			</div>
+					  			<div class="tab-pane fade" id="menu_i" role="tabpanel" aria-labelledby="menu_i-tab">
+					  				
+					  			</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<table class="table table-hover">
+							  	<thead>
+							    	<tr>
+							      		<th scope="col">ID</th>
+							      		<th scope="col">Descripción</th>
+							      		<th scope="col">Precio</th>
+							    	</tr>
+							  	</thead>
+							  	<tbody  id="cuerpo-tabla" style="height: 5rem;">
+							    	<!--<tr>
+							      		<th scope="row">3</th>
+							      		<td colspan="2">Larry the Bird</td>
+							      		<td>@twitter</td>
+							    	</tr>-->
+							  	</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			    <div class="modal-footer">
+			       	<button type="button" class="btn btn-outline-warning" data-dismiss="modal" id="abrir-btn-cancelar">Cancelar</button>
+			       	<button type="button" class="btn btn-outline-primary" id="abrir-btn-guardar">Guardar</button>
+			    </div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="staticBackdropLabel">Detalle Platillo</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body" id="body-modal">
+	        
+	      </div>
+	      <!--<div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary">Understood</button>
+	      </div>-->
+	    </div>
+	  </div>
 	</div>
 	<!--Javascript-->
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
