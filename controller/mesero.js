@@ -260,6 +260,10 @@ $(document).ready(function () {
 		$('#numero_personas').val('1');
 		$('#cuerpo-tabla').html('');
 	});
+	$(document).on('click','.btn-cuenta',function(){
+		let url = "https://www.facturaticket.mx/wp-content/uploads/2017/04/LAS-ALITAS-FACTURACION-TICKET.png";
+		$(window).attr('location',url);
+	});
 
 	$(document).on('click','#menu1',function(){
 		fill_Drinks_And_Complements();
@@ -318,7 +322,14 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click','#abrir-btn-guardar',function(){
-
+		$.ajax({
+			url: '../model/set_comanda.php',
+			type: 'POST',
+			data: {id},
+			success: function(response){
+				seeTables();
+			}
+		});
 	});
 
 	$(document).on('click','.btn-logout',function(){
