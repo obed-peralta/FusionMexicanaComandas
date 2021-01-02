@@ -2,6 +2,7 @@
 
     include('database.php');
 
+    //$query = "SELECT * FROM mesas WHERE estado='Ocupada'";
     $query = "SELECT * FROM mesas";
     $result = mysqli_query($connection, $query);
 

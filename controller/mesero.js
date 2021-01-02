@@ -12,7 +12,6 @@ $(document).ready(function () {
 		if (sessionStorage.getItem('id_usuario')) {
 			//console.log(sessionStorage.getItem('id'));
 			let nombre_usuario = sessionStorage.getItem('nombre_usuario');
-			$('#titulo').html("Mesas");
 			$('.drawer-title').html(`<label><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-house-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 3.293l6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/><path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/></svg>Bienvenido ${nombre_usuario}</label>`);
 			getUserInfo(sessionStorage.getItem('id_usuario'));
 			seeTables();
@@ -31,7 +30,7 @@ $(document).ready(function () {
 			data: {id},
 			success: function(response){
 				let info = JSON.parse(response);
-				console.log(info);
+				//console.log(info);
 				$('#nombre').html(`<label><strong>Nombre</strong></label><br><p>${info.nombre} ${info.apellidos}</p>`);
 				$('#numero_telefonico').html(`<label><strong>Teléfono</strong><p>${info.telefono}</p>`);
 				$('#email').html(`<label><strong>Email</strong><p>${info.email}</p>`);
@@ -171,7 +170,7 @@ $(document).ready(function () {
 				let mesas = JSON.parse(response);
 				let fila = '';
 				let cards = '';
-				console.log(mesas);
+				//console.log(mesas);
 				mesas.forEach(mesa => {
 					switch (mesa.estado) {
 						case 'Disponible':
@@ -244,13 +243,7 @@ $(document).ready(function () {
 		$('#id-mesa').html(`<strong>Mesa: ${id}</strong>`);
 		$('#numero_personas').val('1');
 		$('#cuerpo-tabla').html('');
-		/*$postData = {
-			id_mesa : id
-		};
-		$.post('',postData,function (response){
-
-			}
-		);*/
+		document.querySelector('#abrir-btn-guardar').setAttribute('id-mesa',id);
 	});
 
 	$(document).on('click','.btn-modificar-comanda',function (){
@@ -260,6 +253,7 @@ $(document).ready(function () {
 		$('#numero_personas').val('1');
 		$('#cuerpo-tabla').html('');
 	});
+
 	$(document).on('click','.btn-cuenta',function(){
 		let url = "https://www.facturaticket.mx/wp-content/uploads/2017/04/LAS-ALITAS-FACTURACION-TICKET.png";
 		$(window).attr('location',url);
@@ -268,12 +262,15 @@ $(document).ready(function () {
 	$(document).on('click','#menu1',function(){
 		fill_Drinks_And_Complements();
 	});
+
 	$(document).on('click','#menu2',function(){
 		fill_menu();
 	});
+
 	$(document).on('click','#menu3',function(){
 		fill_light_menu();
 	});
+
 	$(document).on('click','#menu4',function(){
 		fill_kids_menu();
 	});
@@ -294,7 +291,7 @@ $(document).ready(function () {
 					card += 
 					`
 					<div class="card" data-dismiss="modal">
-					  <div class="card-body btn btn-detalle-platillo" id=${detalle.id_detalle_platillo} price=${detalle.precio} desciption='${detalle.descripcion}'>
+					  <div class="card-body btn btn-detalle-platillo" id=${detalle.id_detalle_platillo} price=${detalle.precio} description='${detalle.descripcion}'>
 					    ${detalle.precio} ${detalle.descripcion}
 					  </div>
 					</div>
@@ -305,31 +302,66 @@ $(document).ready(function () {
 		});
 	});
 
+	var platillos = [];
+	function agregarPlatillo(id){
+		platillos.push(id);
+		/*console.log("Longitud array: "+platillos.length);
+		platillos.forEach(platillo=>{
+			console.log("ID Platillo: "+platillo);
+		});*/
+	}
+	function eliminarPlatillo(id){
+		//console.log('-------Eliminación de Platillo-------');
+		let index = platillos.indexOf(id);
+		//console.log("Index ===> "+index+" :: "+id);
+		platillos.splice(index,1);
+		/*console.log("Longitud array: "+platillos.length);
+		platillos.forEach(platillo=>{
+			console.log("ID Platillo: "+platillo);
+		});*/
+	}
+
 	$(document).on('click','.btn-detalle-platillo',function(){
 		let detalle_platillo = $(this)[0];
 		let id = $(detalle_platillo).attr('id');
-		let desciption = $(detalle_platillo).attr('desciption');
+		let description = $(detalle_platillo).attr('description');
 		let price = $(detalle_platillo).attr('price');
 		let template = 
 		`
 		<tr>
       		<th scope="row">${id}</th>
-      		<td>${desciption}</td>
-      		<td>${price}</td>
+      		<td>${description}</td>
+			<td>${price}</td>
+			<td><button type="button" class="btn btn-danger btn-eliminar" id=${id}>Eliminar</button></td>
     	</tr>
 		`;
 		$('#cuerpo-tabla').append(template);
+		agregarPlatillo(id);
+	});
+
+	$(document).on('click','.btn-eliminar',function(){
+		let button = $(this)[0];
+		let id = $(button).attr('id');
+		let row = button.parentElement.parentElement;
+		row.remove();
+		eliminarPlatillo(id);
 	});
 
 	$(document).on('click','#abrir-btn-guardar',function(){
-		$.ajax({
+		const data={		
+			id : $(this).attr('id-mesa')
+		};
+
+		let elementoPadre = $(this)[0].parentElement.parentElement;
+		console.log(elementoPadre);
+		/*$.ajax({
 			url: '../model/set_comanda.php',
 			type: 'POST',
 			data: {id},
 			success: function(response){
 				seeTables();
 			}
-		});
+		});*/
 	});
 
 	$(document).on('click','.btn-logout',function(){
