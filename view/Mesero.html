@@ -70,8 +70,12 @@
 			</div>
 		</div>
 	</div>
-	<div class="container">
-		<div class="mesas"></div>
+	<!--Contenedor de las tarjetas de mesas ocupadas-->
+	<div class="container" id="contenedor-mesas">
+		<div class="mesas text-center"></div>
+		<div class="btn-mas" data-toggle="modal" data-target="#exampleModal">
+			<img src="../icons/png/add.png" width="64" height="64">
+		</div>
 	</div>
 
 	<!-- Modal -->
@@ -88,11 +92,29 @@
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-6">
-							<label id="id-mesa"></label>
+							<div class="row">
+								<div class="col-6 text-left">
+									<label for="id-mesa">Mesa: </label>
+								</div>
+								<div class="col-6">
+									<select class="form-control" id="id-mesa">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+									</select>
+								</div>
+							</div>
 						</div>
 						<div class="col-6">
 							<div class="row">
-								<div class="col-6 text-right">
+								<div class="col-6 text-left">
 									<label for="numero_personas">Personas: </label>
 								</div>
 								<div class="col-6">
@@ -111,7 +133,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</div></br>
 					<div class="row">
 						<div class="col-12">
 							<ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -151,7 +173,9 @@
 							    	<tr>
 							      		<th scope="col">ID</th>
 							      		<th scope="col">Descripción</th>
-							      		<th scope="col">Precio</th>
+										<th scope="col">Precio</th>
+										<th scope="col">Cantidad</th>  
+										<th scope="col">Comentarios</th>
 							    	</tr>
 							  	</thead>
 							  	<tbody  id="cuerpo-tabla" style="height: 5rem;">

@@ -168,68 +168,44 @@ $(document).ready(function () {
 			type: 'GET',
 			success: function (response){
 				let mesas = JSON.parse(response);
-				let fila = '';
-				let cards = '';
-				//console.log(mesas);
-				mesas.forEach(mesa => {
-					switch (mesa.estado) {
-						case 'Disponible':
-							cards = setTypeCard('secondary',cards, mesa);
-							break;
-						case 'Ocupada':
-							cards = setTypeCard('success',cards, mesa);
-							break;
-					}
-				});
-				fila += `<div class="row">${cards}</div>`;
-				$('.mesas').html(fila);
+				if(mesas.length!=0){
+					let fila = '';
+					let cards = '';
+					//console.log(mesas);
+					mesas.forEach(mesa => {
+						cards = setTypeCard('dark',cards, mesa);
+					});
+					fila += `<div class="row">${cards}</div>`;
+					$('.mesas').html(fila);
+				}else{
+					let message=`<h1 class='display-1'>No hay mesas ocupadas</h1>`;
+					$('.mesas').html(message);
+				}
 			}
 		});
 	}
 
 	function setTypeCard(type, cards, mesa){
-		if(mesa.estado==='Ocupada'){
-			cards += `
-			<div class="col-sm-3 col-lg-3 p-2">
-				<div class="card text-white bg-${type} text-center" id="${mesa.id_mesa}">
-					<div class="card-header">
-						${mesa.id_mesa}
-					</div>
-					<div class="card-body" id="${mesa.id_mesa}">
-						<h5 class="card-title">${mesa.estado}</h5>
-						<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-						<div class="row">
-							<div class="col-6">
-								<button class="btn-cuenta btn btn-danger">Cuenta</button>
-							</div>
-							<div class="col-6" data-toggle="modal" data-target="#exampleModal">
-								<button class="btn-modificar-comanda btn btn-primary">Modificar</button>
-							</div>
+		cards += `
+		<div class="col-sm-3 col-lg-3 p-2">
+			<div class="card text-white bg-${type} text-center" id="${mesa.id_mesa}">
+				<div class="card-header">
+					${mesa.estado}
+				</div>
+				<div class="card-body" id="${mesa.id_mesa}">
+					<h5 class="card-title display-4">${mesa.id_mesa}</h5>
+					<div class="row">
+						<div class="col-6">
+							<button class="btn-cuenta btn btn-danger">Cuenta</button>
+						</div>
+						<div class="col-6" data-toggle="modal" data-target="#exampleModal">
+							<button class="btn-modificar-comanda btn btn-primary">Modificar</button>
 						</div>
 					</div>
 				</div>
 			</div>
-			`;
-		}else{
-			cards += `
-			<div class="col-sm-3 col-lg-3 p-2">
-				<div class="card text-white bg-${type} text-center" id="${mesa.id_mesa}">
-					<div class="card-header">
-						${mesa.id_mesa}
-					</div>
-					<div class="card-body" id="${mesa.id_mesa}">
-						<h5 class="card-title">${mesa.estado}</h5>
-						<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-						<div class="row">
-							<div class="col-12" data-toggle="modal" data-target="#exampleModal">
-								<button class="btn-abrir-comanda btn btn-primary">Abrir Comanda</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			`;
-		}
+		</div>
+		`;
 		return cards;
 	}
 
@@ -237,13 +213,17 @@ $(document).ready(function () {
 
 	}
 
-	$(document).on('click','.btn-abrir-comanda',function (){
+	/*$(document).on('click','.btn-abrir-comanda',function (){
 		let element = $(this)[0].parentElement.parentElement.parentElement;
 		let id = $(element).attr('id');
 		$('#id-mesa').html(`<strong>Mesa: ${id}</strong>`);
 		$('#numero_personas').val('1');
 		$('#cuerpo-tabla').html('');
 		document.querySelector('#abrir-btn-guardar').setAttribute('id-mesa',id);
+	});*/
+
+	$('#id-mesa').change(function(){
+		document.querySelector('#abrir-btn-guardar').setAttribute('id-mesa',$(this).val());
 	});
 
 	$(document).on('click','.btn-modificar-comanda',function (){
@@ -278,14 +258,14 @@ $(document).ready(function () {
 	$(document).on('click','.bebidas-complementos, .platillo-menu, .platillo-menu-light, .platillo-menu-kids',function(){
 		let element = $(this)[0].parentElement.parentElement;
 		let id = $(element).attr('id');
-		console.log(id);
+		//console.log(id);
 		$.ajax({
 			url: '../model/get_detalle_platillo.php',
 			type: 'POST',
 			data: {id},
 			success: function(response){
 				let json = JSON.parse(response);
-				console.log(json);
+				//console.log(json);
 				let card = '';
 				json.forEach(detalle => {
 					card += 
@@ -304,10 +284,32 @@ $(document).ready(function () {
 
 	var platillos = [];
 	function agregarPlatillo(id){
-		platillos.push(id);
+		if(platillos.length == 0){ //Si es el primer elemento
+			platillos.push(new Array(id,1)); //Pues se añade
+		}else{// Si no
+			//Se busca...
+			let find = -1;
+			for(let i = 0; i < platillos.length; i++){
+				if(platillos[i][0] == id){ //Si se encuentra
+					find = i; //Se almacena su indice
+					break;
+				}
+			}
+			if (find != -1) {
+				//Si se encontró
+				platillos[find][1] += 1; //Se agrega +1 en cantidad al platillo similar
+				//Se altera el HTML
+			}else{
+				//Si No se encontró
+				//Se agrega un nuevo elemento <array> al array
+				platillos.push(new Array(id,1));
+			}
+		}
+		//console.log(platillos);
 		/*console.log("Longitud array: "+platillos.length);
 		platillos.forEach(platillo=>{
-			console.log("ID Platillo: "+platillo);
+			console.log("ID Platillo: "+platillo[0]);
+			console.log("Cantidad: "+platillo[1]);
 		});*/
 	}
 	function eliminarPlatillo(id){
@@ -332,7 +334,13 @@ $(document).ready(function () {
       		<th scope="row">${id}</th>
       		<td>${description}</td>
 			<td>${price}</td>
-			<td><button type="button" class="btn btn-danger btn-eliminar" id=${id}>Eliminar</button></td>
+			<td>1</td>
+			<td></td>
+			<td>
+				<button type="button" class="btn btn-warning btn-less"><strong>-</strong></button>
+				<button type="button" class="btn btn-danger btn-eliminar" id=${id}>Eliminar</button>
+				<button type="button" class="btn btn-primary btn-more"><strong>+</strong></button>
+			</td>
     	</tr>
 		`;
 		$('#cuerpo-tabla').append(template);
@@ -347,21 +355,23 @@ $(document).ready(function () {
 		eliminarPlatillo(id);
 	});
 
-	$(document).on('click','#abrir-btn-guardar',function(){
-		const data={		
-			id : $(this).attr('id-mesa')
-		};
+	$(document).on('click','#abrir-btn-cancelar',function(){
+		$("#id-mesa option[value='1']").attr("selected", true);
+		$("#numero_personas option[value='1']").attr("selected", true);
+		$('#cuerpo-tabla').html('');
+	});
 
-		let elementoPadre = $(this)[0].parentElement.parentElement;
-		console.log(elementoPadre);
-		/*$.ajax({
-			url: '../model/set_comanda.php',
-			type: 'POST',
-			data: {id},
-			success: function(response){
-				seeTables();
-			}
-		});*/
+	$(document).on('click','#abrir-btn-guardar',function(){
+		let url = '../model/set_comanda.php';
+		let postData={		
+			id_usuario: sessionStorage.getItem('id_usuario'),
+			id_mesa : $(this).attr('id-mesa'),
+			numero_personas : $('#numero_personas').val(),
+			orden : JSON.stringify(platillos)
+		};
+		$.post(url, postData,function(response){
+			console.log(response);
+		});
 	});
 
 	$(document).on('click','.btn-logout',function(){
@@ -369,6 +379,12 @@ $(document).ready(function () {
 		sessionStorage.removeItem('nombre_usuario');
 		sessionStorage.removeItem('id_cargo');
 		$(window).attr('location','../index.html');
+	});
+
+	$(document).on('click','.btn-mas',function(){
+		$("#id-mesa option[value='1']").attr("selected", true);
+		$("#numero_personas option[value='1']").attr("selected", true);
+		$('#cuerpo-tabla').html('');
 	});
 
 });

@@ -2,8 +2,8 @@
 
     include('database.php');
 
-    //$query = "SELECT * FROM mesas WHERE estado='Ocupada'";
-    $query = "SELECT * FROM mesas";
+    $query = "SELECT * FROM mesas WHERE estado='Ocupada'";
+    //$query = "SELECT * FROM mesas";
     $result = mysqli_query($connection, $query);
 
     if (!$result) {
@@ -18,9 +18,9 @@
                     'estado' => $row['estado']
                 );
             }
-            $jsonString = json_encode($json);
-            echo $jsonString;
         }
+        $jsonString = json_encode($json);
+        echo $jsonString;
     }
 
 ?>

@@ -8,3 +8,20 @@
 #titulo{
     font-family: Galada;
 }
+#contenedor-mesas{
+    position: relative;
+}
+.btn-mas{
+    background-color: #F36B15;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 4rem;
+    right: 4rem;
+    cursor: pointer;
+}
+.btn-mas:hover{
+    background-color: #ffffff;
+    opacity: 0.5;
+}
