@@ -283,9 +283,9 @@ $(document).ready(function () {
 	});
 
 	var platillos = [];
-	function agregarPlatillo(id){
+	function agregarPlatillo(id,descripcion,precio,comentarios){
 		if(platillos.length == 0){ //Si es el primer elemento
-			platillos.push(new Array(id,1)); //Pues se añade
+			platillos.push(new Array(id,descripcion,precio,1,comentarios)); //Pues se añade
 		}else{// Si no
 			//Se busca...
 			let find = -1;
@@ -297,14 +297,16 @@ $(document).ready(function () {
 			}
 			if (find != -1) {
 				//Si se encontró
-				platillos[find][1] += 1; //Se agrega +1 en cantidad al platillo similar
-				//Se altera el HTML
+				platillos[find][3] += 1; //Se agrega +1 en cantidad al platillo similar
+				//Se actualiza la tabla
 			}else{
 				//Si No se encontró
 				//Se agrega un nuevo elemento <array> al array
-				platillos.push(new Array(id,1));
+				platillos.push(new Array(id,descripcion,precio,1,comentarios));
 			}
 		}
+		console.log(platillos);
+		updateTable();
 		//console.log(platillos);
 		/*console.log("Longitud array: "+platillos.length);
 		platillos.forEach(platillo=>{
@@ -312,47 +314,63 @@ $(document).ready(function () {
 			console.log("Cantidad: "+platillo[1]);
 		});*/
 	}
-	function eliminarPlatillo(id){
-		//console.log('-------Eliminación de Platillo-------');
-		let index = platillos.indexOf(id);
-		//console.log("Index ===> "+index+" :: "+id);
-		platillos.splice(index,1);
-		/*console.log("Longitud array: "+platillos.length);
-		platillos.forEach(platillo=>{
-			console.log("ID Platillo: "+platillo);
-		});*/
+	function eliminarPlatillo(id,option){
+		if (platillos.length != 0) {
+			// Se busca
+			let find = -1;
+			for(let i = 0; i < platillos.length; i++){
+				if(platillos[i][0] == id){ //Si se encuentra
+					if(platillos[i][3] > 1){ //Si hay más de 1 en cantidad
+						platillos[i][3] -= 1; // Se le resta 1
+						if(option == 0){ //Si presionó el botón eliminar
+							platillos.splice(i,1); //Se remueve el elemento completamente del array	
+						}
+					}else{ // Si no, si hay 1 solamente.
+						platillos.splice(i,1); //Se remueve el elemento completamente del array
+					}	
+					break;
+				}
+			}
+			// Se actualiza la tabla
+			updateTable();
+		}else{
+			console.log("No hay elementos en el arreglo <platillos>");
+		}
+	}
+	function updateTable(){
+		$('#cuerpo-tabla tr').remove();
+		for (let i = 0; i < platillos.length; i++) {
+			let template = 
+			`
+			<tr>
+				<th scope="row">${platillos[i][0]}</th>
+				<td>${platillos[i][1]}</td>
+				<td>${platillos[i][2]}</td>
+				<td>${platillos[i][3]}</td>
+				<td>${platillos[i][4]}</td>
+				<td id=${platillos[i][0]}>
+					<button type="button" class="btn btn-warning btn-less"><strong>-</strong></button>
+					<button type="button" class="btn btn-danger btn-eliminar" id=${platillos[i][0]}>Eliminar</button>
+					<button type="button" class="btn btn-primary btn-more"><strong>+</strong></button>
+				</td>
+			</tr>
+			`;
+			$('#cuerpo-tabla').append(template);
+		}
 	}
 
 	$(document).on('click','.btn-detalle-platillo',function(){
 		let detalle_platillo = $(this)[0];
 		let id = $(detalle_platillo).attr('id');
-		let description = $(detalle_platillo).attr('description');
-		let price = $(detalle_platillo).attr('price');
-		let template = 
-		`
-		<tr>
-      		<th scope="row">${id}</th>
-      		<td>${description}</td>
-			<td>${price}</td>
-			<td>1</td>
-			<td></td>
-			<td>
-				<button type="button" class="btn btn-warning btn-less"><strong>-</strong></button>
-				<button type="button" class="btn btn-danger btn-eliminar" id=${id}>Eliminar</button>
-				<button type="button" class="btn btn-primary btn-more"><strong>+</strong></button>
-			</td>
-    	</tr>
-		`;
-		$('#cuerpo-tabla').append(template);
-		agregarPlatillo(id);
+		let precio = $(detalle_platillo).attr('price');;
+		let descripcion = $(detalle_platillo).attr('description');
+		agregarPlatillo(id,descripcion,precio,'');
 	});
 
 	$(document).on('click','.btn-eliminar',function(){
 		let button = $(this)[0];
 		let id = $(button).attr('id');
-		let row = button.parentElement.parentElement;
-		row.remove();
-		eliminarPlatillo(id);
+		eliminarPlatillo(id,0);
 	});
 
 	$(document).on('click','#abrir-btn-cancelar',function(){
@@ -385,6 +403,22 @@ $(document).ready(function () {
 		$("#id-mesa option[value='1']").attr("selected", true);
 		$("#numero_personas option[value='1']").attr("selected", true);
 		$('#cuerpo-tabla').html('');
+	});
+
+	$(document).on('click','.btn-more',function(){
+		
+		let element = $(this)[0].parentElement;
+		let id = $(element).attr('id');
+		agregarPlatillo(id);
+
+	});
+
+	$(document).on('click','.btn-less',function(){
+		
+		let element = $(this)[0].parentElement;
+		let id = $(element).attr('id');
+		eliminarPlatillo(id);
+
 	});
 
 });
