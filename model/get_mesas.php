@@ -1,6 +1,6 @@
 <?php
 
-    include('database.php');
+    include ('database.php');
 
     $query = "SELECT * FROM mesas WHERE estado='Ocupada'";
     //$query = "SELECT * FROM mesas";

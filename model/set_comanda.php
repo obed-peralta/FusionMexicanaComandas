@@ -1,6 +1,6 @@
 <?php 
 
-	//include('database.php');
+	include ('database.php');
 
 	$id_usuario = $_POST['id_usuario'];
 	$id_mesa = $_POST['id_mesa'];
@@ -31,7 +31,7 @@
 		$query = "INSERT INTO comandas (id_mesa,fecha,id_usuario) VALUES($id_mesa,CURDATE(),$id_usuario)";
 		$result = mysqli_query($connection, $query);
 		if (!$result) {
-			die("No se generó la comanda");
+			die(mysqli_error($connection));
 		}else{
 			$query = "SELECT MAX(id_comanda) AS id_comanda FROM comandas WHERE id_mesa=$id_mesa AND fecha=CURDATE() AND id_usuario=$id_usuario";
 			$result = mysqli_query($connection, $query);
@@ -50,6 +50,8 @@
 						$result = mysqli_query($connection, $query);
 						if(!$result){
 							die("No se generó el detalle de la comanda");
+						}else{
+							echo "OK";
 						}
 					}
 				}

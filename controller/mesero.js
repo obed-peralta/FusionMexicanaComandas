@@ -130,7 +130,6 @@ $(document).ready(function () {
 			}
 		});
 	}
-
 	function fill_kids_menu(){
 		$.ajax({
 			url: '../model/get_menu_kids.php',
@@ -162,6 +161,36 @@ $(document).ready(function () {
 		});
 	}
 
+	let mesasDisponibles = new Array(1,2,3,4,5,6,7,8,9,10);
+	let mesasDisponiblesCopia = mesasDisponibles.slice();
+
+	function reservarMesa(id_mesa){
+		let index = mesasDisponibles.indexOf(parseInt(id_mesa,10));
+		mesasDisponibles[index] = -1;
+	}
+
+	function setNumeroMesas(){
+		let option='';
+		let numeroMesa;
+		$('#id-mesa option').remove();
+		for (let i = 0; i < mesasDisponibles.length; i++) {
+			numeroMesa = mesasDisponibles[i];
+			//console.log(mesasDisponibles);
+			if(numeroMesa != -1){
+				option += `<option value="${mesasDisponibles[i]}">${mesasDisponibles[i]}</option>`;
+			}
+		}
+		$('#id-mesa').html(option);
+	}
+
+	function liberarMesa(id_mesa){
+		for (let i = 0; i < mesasDisponibles.length; i++) {
+			if(id_mesa < mesasDisponibles[i]){
+				mesasDisponibles[i-1] = id_mesa;
+			}
+		}
+	}
+
 	function seeTables(){
 		$.ajax({
 			url: '../model/get_mesas.php',
@@ -181,6 +210,7 @@ $(document).ready(function () {
 					let message=`<h1 class='display-1'>No hay mesas ocupadas</h1>`;
 					$('.mesas').html(message);
 				}
+				setNumeroMesas();
 			}
 		});
 	}
@@ -206,11 +236,35 @@ $(document).ready(function () {
 			</div>
 		</div>
 		`;
+		reservarMesa(mesa.id_mesa);
 		return cards;
 	}
-
-	function verComanda(){
-
+	let jsonVerComanda;
+	function verComanda(response){
+		$('#cuerpo-tabla tr').remove();
+		jsonVerComanda = JSON.parse(response);
+		//console.log(response);				
+		console.log(jsonVerComanda[0]);
+		$(`#numero_personas option[value=${jsonVerComanda[0].numero_personas}]`).attr("selected", true);
+		jsonVerComanda[0].platillos.forEach(platillo=>{
+			//agregarPlatillo(platillo[0],platillo[1],platillo[2],platillo[3]);
+			let template = 
+			`
+			<tr>
+				<th scope="row">${platillo[0]}</th>
+				<td>${platillo[1]}</td>
+				<td>${platillo[2]}</td>
+				<td>${platillo[3]}</td>
+				<td>${platillo[4]}</td>
+				<td id=${platillo[0]}>
+					<button type="button" class="btn btn-warning btn-less-modify"><strong>-</strong></button>
+					<button type="button" class="btn btn-danger btn-eliminar-modify" id=${platillo[0]}>Eliminar</button>
+					<button type="button" class="btn btn-primary btn-more-modify"><strong>+</strong></button>
+				</td>
+			</tr>
+			`;
+			$('#cuerpo-tabla').append(template);
+		});
 	}
 
 	/*$(document).on('click','.btn-abrir-comanda',function (){
@@ -227,16 +281,22 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click','.btn-modificar-comanda',function (){
+		$('#form-mesas').hide();
 		let element = $(this)[0].parentElement.parentElement.parentElement;
-		let id = $(element).attr('id');
-		$('#id-mesa').html(`<strong>Mesa: ${id}</strong>`);
-		$('#numero_personas').val('1');
-		$('#cuerpo-tabla').html('');
+		let id_mesa = $(element).attr('id');
+		$('#titulo-modal').html(`Comanda de la Mesa ${id_mesa}`);
+		$.ajax({
+			url: '../model/get_comanda.php',
+			type: 'POST',
+			data: {id_mesa},
+			success: function(response){
+				verComanda(response);
+			}
+		});
 	});
 
 	$(document).on('click','.btn-cuenta',function(){
-		let url = "https://www.facturaticket.mx/wp-content/uploads/2017/04/LAS-ALITAS-FACTURACION-TICKET.png";
-		$(window).attr('location',url);
+		
 	});
 
 	$(document).on('click','#menu1',function(){
@@ -282,10 +342,10 @@ $(document).ready(function () {
 		});
 	});
 
-	var platillos = [];
-	function agregarPlatillo(id,descripcion,precio,comentarios){
+	var platillos = new Array();
+	function agregarPlatillo(id,descripcion,precio,cantidad = 1,comentarios = ''){
 		if(platillos.length == 0){ //Si es el primer elemento
-			platillos.push(new Array(id,descripcion,precio,1,comentarios)); //Pues se añade
+			platillos.push(new Array(id,descripcion,precio,cantidad,comentarios)); //Pues se añade
 		}else{// Si no
 			//Se busca...
 			let find = -1;
@@ -302,7 +362,7 @@ $(document).ready(function () {
 			}else{
 				//Si No se encontró
 				//Se agrega un nuevo elemento <array> al array
-				platillos.push(new Array(id,descripcion,precio,1,comentarios));
+				platillos.push(new Array(id,descripcion,precio,cantidad,comentarios));
 			}
 		}
 		console.log(platillos);
@@ -338,7 +398,6 @@ $(document).ready(function () {
 		}
 	}
 	function updateTable(){
-		$('#cuerpo-tabla tr').remove();
 		for (let i = 0; i < platillos.length; i++) {
 			let template = 
 			`
@@ -364,7 +423,7 @@ $(document).ready(function () {
 		let id = $(detalle_platillo).attr('id');
 		let precio = $(detalle_platillo).attr('price');;
 		let descripcion = $(detalle_platillo).attr('description');
-		agregarPlatillo(id,descripcion,precio,'');
+		agregarPlatillo(id,descripcion,precio,1);
 	});
 
 	$(document).on('click','.btn-eliminar',function(){
@@ -380,15 +439,34 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click','#abrir-btn-guardar',function(){
+		//console.log($(this)[0]);
+		
 		let url = '../model/set_comanda.php';
 		let postData={		
 			id_usuario: sessionStorage.getItem('id_usuario'),
-			id_mesa : $(this).attr('id-mesa'),
+			id_mesa : parseInt($(this).attr('id-mesa')),
 			numero_personas : $('#numero_personas').val(),
 			orden : JSON.stringify(platillos)
 		};
 		$.post(url, postData,function(response){
-			console.log(response);
+			let template;
+			if(response.includes('OK')){
+				template = `<div class="alert alert-success" role="alert">
+								Comanda Generada Exitosamente!.
+							</div>`;
+				$('#title-alert').html("Operación Exitosa");
+				$('#body-alert').html(template);
+				seeTables();
+			}else{
+				template = `<div class="alert alert-danger" role="alert">
+								No se pudo generar la comanda, inténtelo nuevamente.</br>
+								${response}
+							</div>`;
+				$('#title-alert').html("Error");
+				$('#body-alert').html(template);
+			}
+			$('#alertModal').modal("show");
+			platillos = new Array();
 		});
 	});
 
@@ -400,6 +478,8 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click','.btn-mas',function(){
+		$('#titulo-modal').html('Agregar Comanda');
+		$('#form-mesas').show();
 		$("#id-mesa option[value='1']").attr("selected", true);
 		$("#numero_personas option[value='1']").attr("selected", true);
 		$('#cuerpo-tabla').html('');
@@ -419,6 +499,43 @@ $(document).ready(function () {
 		let id = $(element).attr('id');
 		eliminarPlatillo(id);
 
+	});
+
+
+	$(document).on('click','.btn-eliminar-modify',function(){
+		let opcion = confirm("¿Estás seguro que deseas eliminar este platillo?");
+		if(opcion == true){
+			let tr = $(this)[0].parentElement;
+			let id = $(tr).attr('id');
+			let url = '../model/update_comanda.php';
+			let postData={		
+				operacion : 'delete',
+				id_platillo: id
+			};
+			$.post(url, postData,function(response){
+				alert("Eliminado");
+			});
+		}
+	});
+
+	$(document).on('click','.btn-less-modify',function(){
+		let url = '../model/update_comanda.php';
+		let postData={		
+			operacion : 'less'
+		};
+		$.post(url, postData,function(response){
+			
+		});
+	});
+
+	$(document).on('click','.btn-more-modify',function(){
+		let url = '../model/update_comanda.php';
+		let postData={		
+			operacion : 'more'
+		};
+		$.post(url, postData,function(response){
+			
+		});
 	});
 
 });
