@@ -267,6 +267,27 @@ $(document).ready(function () {
 		});
 	}
 
+	function extraerComanda(btnModificar){
+		$('#form-mesas').hide();
+		let element;
+		let id_mesa;
+		if (btnModificar != undefined) {
+			element = $(btnModificar)[0].parentElement.parentElement.parentElement;
+			id_mesa = $(element).attr('id');	
+			$('#titulo-modal').html(`Comanda de la Mesa <label class='lb_id_mesa' value=${id_mesa}>${id_mesa}</label>`);
+		}else{
+			id_mesa = $('.lb_id_mesa').attr('value');;
+		}
+		console.log("ID Mesa: "+id_mesa);
+		$.ajax({
+			url: '../model/get_comanda.php',
+			type: 'POST',
+			data: {id_mesa},
+			success: function(response){
+				verComanda(response);
+			}
+		});
+	}
 	/*$(document).on('click','.btn-abrir-comanda',function (){
 		let element = $(this)[0].parentElement.parentElement.parentElement;
 		let id = $(element).attr('id');
@@ -281,18 +302,19 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click','.btn-modificar-comanda',function (){
-		$('#form-mesas').hide();
-		let element = $(this)[0].parentElement.parentElement.parentElement;
-		let id_mesa = $(element).attr('id');
-		$('#titulo-modal').html(`Comanda de la Mesa ${id_mesa}`);
-		$.ajax({
-			url: '../model/get_comanda.php',
-			type: 'POST',
-			data: {id_mesa},
-			success: function(response){
-				verComanda(response);
+		
+		let llave = prompt("Pida al encargado de turno que ingrese su llave:");
+
+		if (llave == null || llave == '') {
+			alert('Entrada vacía');
+		}else{
+			if(llave === 'encargado turno'){
+				extraerComanda(this);
+				document.querySelector('#abrir-btn-guardar').setAttribute('id-mesa',$('.lb_id_mesa').attr('value'));
+			}else{
+				alert('La llave es incorrecta');
 			}
-		});
+		}
 	});
 
 	$(document).on('click','.btn-cuenta',function(){
@@ -398,6 +420,7 @@ $(document).ready(function () {
 		}
 	}
 	function updateTable(){
+		$('#cuerpo-tabla tr').remove();
 		for (let i = 0; i < platillos.length; i++) {
 			let template = 
 			`
@@ -510,31 +533,57 @@ $(document).ready(function () {
 			let url = '../model/update_comanda.php';
 			let postData={		
 				operacion : 'delete',
+				id_comanda: jsonVerComanda[0].id_comanda,
 				id_platillo: id
 			};
 			$.post(url, postData,function(response){
+				if(response.includes('OK')){
+					extraerComanda();
+				}
 				alert("Eliminado");
 			});
 		}
 	});
 
+	function setOperacion(id){
+		let operacion = 'less';
+		for(let i = 0; i < jsonVerComanda[0].platillos.length; i++){
+			if (jsonVerComanda[0].platillos[i][0] == id && jsonVerComanda[0].platillos[i][3] == 1) {
+				operacion = 'delete';
+			}
+		}
+		return operacion;
+	}
+
 	$(document).on('click','.btn-less-modify',function(){
+		let tr = $(this)[0].parentElement;
+		let id = $(tr).attr('id');
 		let url = '../model/update_comanda.php';
 		let postData={		
-			operacion : 'less'
+			operacion : setOperacion(id),
+			id_comanda: jsonVerComanda[0].id_comanda,
+			id_platillo: id
 		};
 		$.post(url, postData,function(response){
-			
+			if(response.includes('OK')){
+				extraerComanda();
+			}
 		});
 	});
 
 	$(document).on('click','.btn-more-modify',function(){
+		let tr = $(this)[0].parentElement;
+		let id = $(tr).attr('id');
 		let url = '../model/update_comanda.php';
 		let postData={		
-			operacion : 'more'
+			operacion : 'more',
+			id_comanda: jsonVerComanda[0].id_comanda,
+			id_platillo: id
 		};
 		$.post(url, postData,function(response){
-			
+			if(response.includes('OK')){
+				extraerComanda();
+			}
 		});
 	});
 
