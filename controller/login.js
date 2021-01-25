@@ -52,4 +52,53 @@ $(document).ready(function () {
             });
 		}
 	});
+
+	$('#btn-enviar-registrar').on('click',function(){
+		if($('#Nombre').val() && $('#Apellidos').val() && $('#Edad').val()){
+			let url = "model/set_user.php";
+			let nombre = $('#Nombre').val();
+			let apellidos = $('#Apellidos').val();
+			let edad = $('#Edad').val();
+			let email = $('#Email').val();
+			let telefono = $('#Telefono').val();
+			
+			$.post(url,{nombre,apellidos,edad,email,telefono},function(response){
+				if(response.includes("OK")){
+					let template = `<div class="alert alert-primary" role="alert">
+										Registrado.
+										El usuario es tú nombre
+										Contraseña: GENERIC_PASSWORD
+									</div>`;
+					$('#title-alert').html("Operación Exitosa");
+					$('#body-alert').html(template);
+					$('#modalRegistrar').modal('hide');
+					$('#alertModal').modal('show');
+					$('#Nombre').val('');
+					$('#Apellidos').val('');
+					$('#Edad').val('')
+					$('#Email').val('');
+					$('#Telefono').val('');
+				}else{
+					let template = `<div class="alert alert-danger" role="alert">
+										ERROR: ${response}
+									</div>`;
+					$('#title-alert').html("Ocurrió un error");
+					$('#body-alert').html(template);
+					$('#alertModal').modal('show');
+				}
+			});
+		}else{
+			let template = `<div class="alert alert-danger" role="alert">
+								Complete los primeros 3 campos
+							</div>`;
+			$('#title-alert').html("Datos faltantes");
+			$('#body-alert').html(template);
+			$('#alertModal').modal('show');
+			$('#Nombre').val('');
+			$('#Apellidos').val('');
+			$('#Edad').val('')
+			$('#Email').val('');
+			$('#Telefono').val('');
+		}
+	});
 });

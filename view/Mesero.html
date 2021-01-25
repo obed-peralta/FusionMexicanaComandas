@@ -81,7 +81,7 @@
 	<!-- Modal -->
 	<!--Modal de apertura de comandas-->
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-scrollable modal-lg">
+		<div class="modal-dialog modal-dialog-scrollable modal-xl">
 		    <div class="modal-content">
 		        <div class="modal-header">
 		        	<h5 class="modal-title" id="titulo-modal">Agregar Comanda</h5>
@@ -189,6 +189,129 @@
 		</div>
 	</div>
 
+	<!--Modal de modificación de comandas-->
+	<div class="modal fade" id="modalModificacionComandas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-xl">
+		    <div class="modal-content">
+		        <div class="modal-header">
+		        	<h5 class="modal-title" id="titulo-modal">Modificar Comanda</h5>
+		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          		<span aria-hidden="true">&times;</span>
+		        	</button>
+  		        </div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-12">
+							<ul class="nav nav-tabs" id="myTab" role="tablist">
+					  			<li class="nav-item" role="presentation">
+					    			<a class="nav-link active" id="menu1" data-toggle="tab" href="#bebidas" role="tab" aria-controls="home" aria-selected="true">Bebidas & Complementos</a>
+					  			</li>
+					   			<li class="nav-item" role="presentation">
+					    			<a class="nav-link" id="menu2" data-toggle="tab" href="#menu" role="tab" aria-controls="profile" aria-selected="false">Menú</a>
+					  			</li>
+					    		<li class="nav-item" role="presentation">
+					    			<a class="nav-link" id="menu3" data-toggle="tab" href="#menu_l" role="tab" aria-controls="contact" aria-selected="false">Menú Ligero</a>
+					 		  	</li>
+					 		  	<li class="nav-item" role="presentation">
+					    			<a class="nav-link" id="menu4" data-toggle="tab" href="#menu_i" role="tab" aria-controls="contact" aria-selected="false">Menú Infantil</a>
+					 		  	</li>
+							</ul>
+							<div class="tab-content p-3" id="myTabContent" style="height: 9rem;overflow-y: auto;">
+					  			<div class="tab-pane fade show active" id="bebidas" role="tabpanel" aria-labelledby="bebidas-tab" style="">
+					  				
+					  			</div>
+					  			<div class="tab-pane fade" id="menu" role="tabpanel" aria-labelledby="menu-tab">
+					  				
+					  			</div>
+					  			<div class="tab-pane fade" id="menu_l" role="tabpanel" aria-labelledby="menu_l-tab">
+					  				
+					  			</div>
+					  			<div class="tab-pane fade" id="menu_i" role="tabpanel" aria-labelledby="menu_i-tab">
+					  				
+					  			</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<table class="table table-hover">
+							  	<thead>
+							    	<tr>
+							      		<th scope="col">ID</th>
+							      		<th scope="col">Descripción</th>
+										<th scope="col">Precio</th>
+										<th scope="col">Cantidad</th>  
+										<th scope="col">Comentarios</th>
+							    	</tr>
+							  	</thead>
+							  	<tbody  id="cuerpo-tabla" style="height: 5rem;">
+							    	<!--<tr>
+							      		<th scope="row">3</th>
+							      		<td colspan="2">Larry the Bird</td>
+							      		<td>@twitter</td>
+							    	</tr>-->
+							  	</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			    <div class="modal-footer">
+					<div class="meta-data" id-mesa=0 personas=0></div>
+			       	<button type="button" class="btn btn-outline-warning" data-dismiss="modal" id="abrir-btn-cancelar">Cancelar</button>
+			       	<button type="button" class="btn btn-outline-primary" data-dismiss="modal" id="abrir-btn-guardar" id-mesa=0>Guardar</button>
+			    </div>
+			</div>
+		</div>
+	</div>
+
+	<!--Modal Cuenta-->
+	<div class="modal fade" id="modalCuenta" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="tituloModalCuenta"></h5>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th scope="col">ID</th>
+									<th scope="col">Descripción</th>
+									<th scope="col">Precio</th>
+									<th scope="col">Cantidad</th>  
+									<th scope="col">Subtotal</th>
+								</tr>
+							</thead>
+							<tbody  id="resumen-comanda" style="height: 5rem;">
+								<!--<tr>
+									<th scope="row">3</th>
+									<td colspan="2">Larry the Bird</td>
+									<td>@twitter</td>
+								</tr>-->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<select id="tipo_pago" class="form-control">
+					<option value="Efectivo" selected>Efectivo</option>
+					<option value="Tarjeta">Tarjeta C/D</option>
+					<option value="Cortesia">Cortesía</option>
+				</select>
+				<input type="text" class="form-control" id="pago" placeholder="$ Usted Paga...">
+			  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+			  <button type="button" class="btn btn-success btn-cobrar">Realizar Cobro</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
 	<!-- Modal -->
 	<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	  <div class="modal-dialog">
@@ -209,6 +332,7 @@
 	    </div>
 	  </div>
 	</div>
+
 	<!-- Modal Alert -->
 	<div class="modal fade" id="alertModal" tabindex="-1">
 		<div class="modal-dialog">
@@ -227,7 +351,8 @@
 			</div>
 		  </div>
 		</div>
-	  </div>
+	</div>
+
 	<!--Javascript-->
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

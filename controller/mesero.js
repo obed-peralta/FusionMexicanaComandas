@@ -7,6 +7,8 @@ $(document).ready(function () {
 		focus: false,
 		show: false
 	});
+	
+	let modificar = false;
 
 	if (window.sessionStorage) {
 		if (sessionStorage.getItem('id_usuario')) {
@@ -225,7 +227,7 @@ $(document).ready(function () {
 				<div class="card-body" id="${mesa.id_mesa}">
 					<h5 class="card-title display-4">${mesa.id_mesa}</h5>
 					<div class="row">
-						<div class="col-6">
+						<div class="col-6" data-toggle="modal" data-target="#modalCuenta">
 							<button class="btn-cuenta btn btn-danger">Cuenta</button>
 						</div>
 						<div class="col-6" data-toggle="modal" data-target="#exampleModal">
@@ -239,14 +241,23 @@ $(document).ready(function () {
 		reservarMesa(mesa.id_mesa);
 		return cards;
 	}
+	
 	let jsonVerComanda;
+	let platillosEnComanda;
+	let lengthForUpdate = 0;
+	
 	function verComanda(response){
 		$('#cuerpo-tabla tr').remove();
-		jsonVerComanda = JSON.parse(response);
-		//console.log(response);				
+		console.log(response);	
+		jsonVerComanda = JSON.parse(response);			
 		console.log(jsonVerComanda[0]);
 		$(`#numero_personas option[value=${jsonVerComanda[0].numero_personas}]`).attr("selected", true);
-		jsonVerComanda[0].platillos.forEach(platillo=>{
+		
+		platillosEnComanda = jsonVerComanda[0].platillos.slice(); // Se copia el array
+		lengthForUpdate = platillosEnComanda.length; //Se extrae la longitud inicial de los platillos que ya estaban en la comanda para saber de donde actualizar y guardar
+		
+		//console.log(platillosEnComanda);
+		platillosEnComanda.forEach(platillo=>{
 			//agregarPlatillo(platillo[0],platillo[1],platillo[2],platillo[3]);
 			let template = 
 			`
@@ -288,6 +299,28 @@ $(document).ready(function () {
 			}
 		});
 	}
+
+	function reloadTable(){
+		$('#cuerpo-tabla tr').remove();
+		platillosEnComanda.forEach(platillo=>{
+			let template = 
+			`
+			<tr>
+				<th scope="row">${platillo[0]}</th>
+				<td>${platillo[1]}</td>
+				<td>${platillo[2]}</td>
+				<td>${platillo[3]}</td>
+				<td>${platillo[4]}</td>
+				<td id=${platillo[0]}>
+					<button type="button" class="btn btn-warning btn-less-modify"><strong>-</strong></button>
+					<button type="button" class="btn btn-danger btn-eliminar-modify" id=${platillo[0]}>Eliminar</button>
+					<button type="button" class="btn btn-primary btn-more-modify"><strong>+</strong></button>
+				</td>
+			</tr>
+			`;
+			$('#cuerpo-tabla').append(template);
+		});
+	}
 	/*$(document).on('click','.btn-abrir-comanda',function (){
 		let element = $(this)[0].parentElement.parentElement.parentElement;
 		let id = $(element).attr('id');
@@ -302,23 +335,9 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click','.btn-modificar-comanda',function (){
-		
-		let llave = prompt("Pida al encargado de turno que ingrese su llave:");
-
-		if (llave == null || llave == '') {
-			alert('Entrada vacía');
-		}else{
-			if(llave === 'encargado turno'){
-				extraerComanda(this);
-				document.querySelector('#abrir-btn-guardar').setAttribute('id-mesa',$('.lb_id_mesa').attr('value'));
-			}else{
-				alert('La llave es incorrecta');
-			}
-		}
-	});
-
-	$(document).on('click','.btn-cuenta',function(){
-		
+		extraerComanda(this);
+		document.querySelector('#abrir-btn-guardar').setAttribute('id-mesa',$('.lb_id_mesa').attr('value'));
+		modificar = true;
 	});
 
 	$(document).on('click','#menu1',function(){
@@ -396,6 +415,25 @@ $(document).ready(function () {
 			console.log("Cantidad: "+platillo[1]);
 		});*/
 	}
+	function agregarPlatilloUpdate(id,descripcion,precio,cantidad = 1,comentarios = ''){
+		//Se busca...
+		let find = -1;
+		for(let i = 0; i < platillosEnComanda.length; i++){
+			if(platillosEnComanda[i][0] == id){ //Si se encuentra
+				find = i; //Se almacena su indice
+				break;
+			}
+		}
+		if (find != -1) {
+			//Si se encontró
+			platillosEnComanda[find][3] += 1; //Se agrega +1 en cantidad al platillo similar
+			//Se actualiza la tabla
+		}else{
+			//Si No se encontró
+			//Se agrega un nuevo elemento <array> al array
+			platillosEnComanda.push(new Array(id,descripcion,precio,cantidad,comentarios));
+		}
+	}
 	function eliminarPlatillo(id,option){
 		if (platillos.length != 0) {
 			// Se busca
@@ -446,7 +484,12 @@ $(document).ready(function () {
 		let id = $(detalle_platillo).attr('id');
 		let precio = $(detalle_platillo).attr('price');;
 		let descripcion = $(detalle_platillo).attr('description');
-		agregarPlatillo(id,descripcion,precio,1);
+		if(modificar != true){
+			agregarPlatillo(id,descripcion,precio,1);
+		}else{
+			agregarPlatilloUpdate(id,descripcion,precio,1);
+			reloadTable();
+		}
 	});
 
 	$(document).on('click','.btn-eliminar',function(){
@@ -463,34 +506,44 @@ $(document).ready(function () {
 
 	$(document).on('click','#abrir-btn-guardar',function(){
 		//console.log($(this)[0]);
-		
-		let url = '../model/set_comanda.php';
-		let postData={		
-			id_usuario: sessionStorage.getItem('id_usuario'),
-			id_mesa : parseInt($(this).attr('id-mesa')),
-			numero_personas : $('#numero_personas').val(),
-			orden : JSON.stringify(platillos)
-		};
-		$.post(url, postData,function(response){
-			let template;
-			if(response.includes('OK')){
-				template = `<div class="alert alert-success" role="alert">
-								Comanda Generada Exitosamente!.
-							</div>`;
-				$('#title-alert').html("Operación Exitosa");
-				$('#body-alert').html(template);
-				seeTables();
-			}else{
-				template = `<div class="alert alert-danger" role="alert">
-								No se pudo generar la comanda, inténtelo nuevamente.</br>
-								${response}
-							</div>`;
-				$('#title-alert').html("Error");
-				$('#body-alert').html(template);
-			}
+		if(modificar == true){
+			upPlatillosEnComanda();
+			template = `<div class="alert alert-success" role="alert">
+							Guardado!.
+						</div>`;
+			$('#title-alert').html("Operación Exitosa");
+			$('#body-alert').html(template);
 			$('#alertModal').modal("show");
-			platillos = new Array();
-		});
+			modificar = false;
+		}else{
+			let url = '../model/set_comanda.php';
+			let postData={		
+				id_usuario: sessionStorage.getItem('id_usuario'),
+				id_mesa : parseInt($(this).attr('id-mesa')),
+				numero_personas : $('#numero_personas').val(),
+				orden : JSON.stringify(platillos)
+			};
+			$.post(url, postData,function(response){
+				let template;
+				if(response.includes('OK')){
+					template = `<div class="alert alert-success" role="alert">
+									Comanda Generada Exitosamente!.
+								</div>`;
+					$('#title-alert').html("Operación Exitosa");
+					$('#body-alert').html(template);
+					seeTables();
+				}else{
+					template = `<div class="alert alert-danger" role="alert">
+									No se pudo generar la comanda, inténtelo nuevamente.</br>
+									${response}
+								</div>`;
+					$('#title-alert').html("Error");
+					$('#body-alert').html(template);
+				}
+				$('#alertModal').modal("show");
+				platillos = new Array();
+			});
+		}		
 	});
 
 	$(document).on('click','.btn-logout',function(){
@@ -506,6 +559,7 @@ $(document).ready(function () {
 		$("#id-mesa option[value='1']").attr("selected", true);
 		$("#numero_personas option[value='1']").attr("selected", true);
 		$('#cuerpo-tabla').html('');
+		modificar = false;
 	});
 
 	$(document).on('click','.btn-more',function(){
@@ -530,51 +584,90 @@ $(document).ready(function () {
 		if(opcion == true){
 			let tr = $(this)[0].parentElement;
 			let id = $(tr).attr('id');
-			let url = '../model/update_comanda.php';
-			let postData={		
-				operacion : 'delete',
-				id_comanda: jsonVerComanda[0].id_comanda,
-				id_platillo: id
-			};
-			$.post(url, postData,function(response){
-				if(response.includes('OK')){
-					extraerComanda();
+			let index = -1;
+			for(let i = 0; i < platillosEnComanda.length; i++){
+				if(platillosEnComanda[i][0] == id){
+					index = i;
+					break;
 				}
-				alert("Eliminado");
-			});
+			}
+			if(index != -1){
+				console.log("Platillos En Comanda");
+				console.log(platillosEnComanda.slice());
+				if(index < lengthForUpdate){
+					lengthForUpdate--;
+				}
+				platillosEnComanda.splice(index,1);
+
+				let url = '../model/delete_comanda.php';
+				let postData={		
+					id_comanda: jsonVerComanda[0].id_comanda,
+					id_platillo: id
+				};
+				console.log("Comanda de Eliminación");
+				console.log(postData.id_comanda);
+				console.log("Platillo de Eliminación");
+				console.log(postData.id_platillo);
+				$.post(url, postData,function(response){
+					if(response.includes('OK')){
+						upPlatillosEnComanda();
+						extraerComanda();
+						alert("Eliminado");
+					}
+				});
+			}
 		}
 	});
 
-	function setOperacion(id){
-		let operacion = 'less';
-		for(let i = 0; i < jsonVerComanda[0].platillos.length; i++){
-			if (jsonVerComanda[0].platillos[i][0] == id && jsonVerComanda[0].platillos[i][3] == 1) {
-				operacion = 'delete';
-			}
+	function upPlatillosEnComanda(){
+		let url = "../model/update_comanda.php";
+		let postData ={
+			id_comanda : jsonVerComanda[0].id_comanda,
+			cuantosUpdate : lengthForUpdate,
+			arrayPlatillos : JSON.stringify(platillosEnComanda)
 		}
-		return operacion;
+		$.post(url,postData,function(response){
+			console.log(response);
+		});
 	}
 
 	$(document).on('click','.btn-less-modify',function(){
 		let tr = $(this)[0].parentElement;
 		let id = $(tr).attr('id');
-		let url = '../model/update_comanda.php';
-		let postData={		
-			operacion : setOperacion(id),
-			id_comanda: jsonVerComanda[0].id_comanda,
-			id_platillo: id
-		};
-		$.post(url, postData,function(response){
-			if(response.includes('OK')){
-				extraerComanda();
+		let drop = false;
+		let index;
+		for(let i = 0; i < platillosEnComanda.length; i++){
+			if(platillosEnComanda[i][0] == id){
+				index = i;
+				if(platillosEnComanda[i][3] > 1){
+					platillosEnComanda[i][3] -= 1;
+				}else{
+					drop = true;
+				}
+				break;
 			}
-		});
+		}
+		if(drop === true){
+			if(index < lengthForUpdate){
+				lengthForUpdate--;
+			}
+			platillosEnComanda.splice(index,1);
+			upPlatillosEnComanda();
+		}
+		reloadTable();
 	});
 
 	$(document).on('click','.btn-more-modify',function(){
 		let tr = $(this)[0].parentElement;
 		let id = $(tr).attr('id');
-		let url = '../model/update_comanda.php';
+		for(let i = 0; i < platillosEnComanda.length; i++){
+			if(platillosEnComanda[i][0] == id){
+				platillosEnComanda[i][3] = parseInt(platillosEnComanda[i][3])+1;
+				break;
+			}
+		}
+		reloadTable();
+		/*let url = '../model/update_comanda.php';
 		let postData={		
 			operacion : 'more',
 			id_comanda: jsonVerComanda[0].id_comanda,
@@ -584,7 +677,79 @@ $(document).ready(function () {
 			if(response.includes('OK')){
 				extraerComanda();
 			}
+		});*/
+	});
+
+	/*------------------------------------------------------------------------------------------------ */
+	/** Sacar la cuenta de la mesa o la comanda */
+
+	$(document).on('click','.btn-cuenta',function(){
+		$('#resumen-comanda tr').remove();
+		let element = $(this)[0].parentElement.parentElement.parentElement;
+		let id_mesa = $(element).attr('id');
+		$.ajax({
+			url: '../model/get_comanda.php',
+			type: 'POST',
+			data: {id_mesa},
+			success: function(response){
+				jsonVerComanda = JSON.parse(response);
+				let plantilla='';
+				let total = 0;
+				console.log(jsonVerComanda[0]);
+				$('#tituloModalCuenta').html('Comanda '+jsonVerComanda[0].id_comanda+'</br>'+'Mesa: '+id_mesa);
+				jsonVerComanda[0].platillos.forEach(platillo=>{
+					total += (platillo[2]*platillo[3]);
+					plantilla = `<tr>
+						<th scope="row">${platillo[0]}</th>
+						<td>${platillo[1]}</td>
+						<td>${platillo[2]}</td>
+						<td>${platillo[3]}</td>
+						<td>$  ${platillo[2]*platillo[3]}</td>
+					</tr>
+					`;
+					$('#resumen-comanda').append(plantilla);
+				});
+				plantilla = `<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<th>Total</th>
+					<th>$  ${total}</th>
+				</tr>`;
+				$('#resumen-comanda').append(plantilla);
+			}
 		});
+	});
+
+	$(document).on('click','.btn-cobrar',function(){
+		if($('#pago').val()){
+			let pago = $('#pago').val();
+			let tipo_pago = $('#tipo_pago').val();
+			let postData = {
+				pagar: pago,
+				tipo: tipo_pago,
+				id_comanda: jsonVerComanda[0].id_comanda,
+				id_mesa: jsonVerComanda[0].id_mesa,
+				numero_personas: jsonVerComanda[0].numero_personas,
+				platillos: JSON.stringify(jsonVerComanda[0].platillos)
+			};
+			$.post('../model/realizar_cobro.php',postData,function(response){
+				console.log(response);
+				if(response.includes("OK")){
+					let url = `../model/ticket.php?pagar=${postData.pagar}&tipo=${postData.tipo}&id_comanda=${postData.id_comanda}&id_mesa=${postData.id_mesa}&numero_personas=${postData.numero_personas}&platillos=${postData.platillos}`;
+					$('#modalCuenta').modal('hide');
+					seeTables();
+					window.open(url);
+				}
+			});
+		}else{
+			template = `<div class="alert alert-danger" role="alert">
+							Ingrese el pago del comensal.
+						</div>`;
+			$('#title-alert').html("Error");
+			$('#body-alert').html(template);
+			$('#alertModal').modal("show");
+		}
 	});
 
 });
