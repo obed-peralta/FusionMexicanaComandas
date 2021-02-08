@@ -6,7 +6,7 @@
 		$user = $_POST['user'];
 		$password = $_POST['password'];
 		
-		$query = "SELECT id_usuario,nombre_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
+		$query = "SELECT id_usuario,nombre_usuario,id_detalle_usuario FROM usuarios WHERE nombre_usuario='$user' AND password_usuario='$password'";
 		
 		$result = mysqli_query($connection, $query);
 
@@ -25,6 +25,11 @@
 
 				$id = $row['id_usuario']; //Extraemos el id y lo guardamos
 				$nombre = $row['nombre_usuario']; //Extraemos el nombre y lo guardamos
+				$id_detalle_usuario = $row['id_detalle_usuario']; //Extraemos el detalle del usuario
+
+				//Actualizamos su estado (sesión)
+				$query = "UPDATE detalle_usuarios SET status = true WHERE id_detalle_usuario = $id_detalle_usuario";
+				mysqli_query($connection,$query);
 
 				$query = "SELECT c.id_cargo FROM cargos c INNER JOIN detalle_usuarios du ON du.id_cargo = c.id_cargo INNER JOIN usuarios u ON u.id_detalle_usuario = du.id_detalle_usuario WHERE u.id_usuario=$id"; //Extraemos el cargo del usuario según su id
 				
