@@ -3,9 +3,30 @@ $(document).ready(function(){
     console.log("admin.js it works");
     
     /**
+     * INICIO Bloque de información del usuario
+     */
+    if(window.sessionStorage){
+        if(sessionStorage.getItem('id_usuario')){
+            let nombre_usuario = sessionStorage.getItem('nombre_usuario');
+            $('.drawer-title').html(`${nombre_usuario}`);
+            animacionInicio();
+        }else{
+            $(window).attr('location','../index.html');
+        }
+    }else{
+        throw new Error('Tu navegador web no soporta sesiones');
+    }
+
+    $('#drawer-demo').drawer({
+		//backdrop: 'static',
+		//keyboard: false,
+		focus: false,
+		show: false
+	});
+
+    /**
      * INICIO Bloque para generar animación de circulos
      */
-    animacionInicio();
     function animacionInicio(){
         let container = document.querySelector('#container');
         for (let i = 0; i <= 7; i++) {          
@@ -37,14 +58,11 @@ $(document).ready(function(){
      * FIN Bloque para generar animación de circulos
      */
 
-    /**
-     * INICIO Bloque de información del usuario
-     */
-    $('#drawer-demo').drawer({
-		//backdrop: 'static',
-		//keyboard: false,
-		focus: false,
-		show: false
-	});
+     $(document).on('click','.btn-logout',function(){
+        window.sessionStorage.removeItem('id_usuario');
+        window.sessionStorage.removeItem('nombre_usuario');
+        window.sessionStorage.removeItem('id_cargo');
+        $(window).attr('location','../index.html');
+     });
 
 });
