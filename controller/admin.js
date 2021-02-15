@@ -18,6 +18,8 @@ $(document).ready(function(){
     }else{
         throw new Error('Tu navegador web no soporta sesiones');
     }
+    
+    // Función para obtener la información del usuario
     function getUserInfo(id){
         $.ajax({
             url: '../model/get_user_info.php',
@@ -26,12 +28,14 @@ $(document).ready(function(){
             success: function(response){
                 let info = JSON.parse(response);
 				//console.log(info);
-				$('#nombre').html(`<label><strong>Nombre</strong></label><br><p>${info.nombre} ${info.apellidos}</p>`);
-				$('#numero_telefonico').html(`<label><strong>Teléfono</strong><p>${info.telefono}</p>`);
-				$('#email').html(`<label><strong>Email</strong><p>${info.email}</p>`);
+				$('#nombre').html(`<label for="nombreUsuario">Nombre</label><input class="form-control" id="nombreUsuario" type="text" value="${info.nombre}" disabled></input>`);
+                $('#apellidos').html(`<label for="apellidosUsuario">Apellidos</label><input class="form-control" id="apellidosUsuario" type="text" value="${info.apellidos}" disabled></input>`);
+				$('#numero_telefonico').html(`<label for="numeroUsuario">Teléfono</label><input class="form-control" id="numeroUsuario" type="text" value="${info.telefono}" disabled></input>`);
+				$('#email').html(`<label for="emailUsuario">Email</label><input class="form-control" id="emailUsuario" type="text" value="${info.email}" disabled></input>`);
             }
         });
     }
+
     $('#drawer-demo').drawer({
 		//backdrop: 'static',
 		//keyboard: false,
@@ -77,12 +81,56 @@ $(document).ready(function(){
      * FIN Bloque para generar animación de circulos
      */
 
-     $(document).on('click','.btn-logout',function(){
+    // Función para cerrar sesión
+    $(document).on('click','.btn-logout',function(){
         window.sessionStorage.removeItem('id_usuario');
         window.sessionStorage.removeItem('nombre_usuario');
         window.sessionStorage.removeItem('id_cargo');
         window.sessionStorage.removeItem('id_detalle_usuario');
         $(window).attr('location','../index.html');
-     });
+    });
+
+    // Función para modificar la información del usuario
+    $(document).on('click','#btn-modificar-usuario',function(){
+        $('#nombreUsuario').prop('disabled',false);
+        $('#apellidosUsuario').prop('disabled',false);
+        $('#numeroUsuario').prop('disabled',false);
+        $('#emailUsuario').prop('disabled',false);
+        
+        let element = $(this)[0];
+        $(element).text('Guardar');
+        $(element).attr('id','btn-guardar-usuario');
+
+    });
+
+    // Función para guardar la información del usuario
+    $(document).on('click','#btn-guardar-usuario',function(){
+
+        // Falta VALIDAR
+        let id_usuario = parseInt(sessionStorage.getItem('id_usuario'));
+        let nombre = $('#nombreUsuario').val();
+        let apellidos = $('#apellidosUsuario').val();
+        let numero = $('#numeroUsuario').val();
+        let email = $('#emailUsuario').val();
+
+        let element = $(this)[0];
+
+        let objectPOST = {id_usuario,nombre,apellidos,numero,email};
+
+
+        $.post('../model/save_info_user.php',objectPOST,function(response){
+            if(response == '1'){
+                $('#nombreUsuario').prop('disabled',true);
+                $('#apellidosUsuario').prop('disabled',true);
+                $('#numeroUsuario').prop('disabled',true);
+                $('#emailUsuario').prop('disabled',true);
+                $(element).text('Modificar');
+                $(element).attr('id','btn-modificar-usuario');
+            }else{
+                alert(response);
+            }
+        });
+
+    });
 
 });
