@@ -25,22 +25,22 @@
                         <a class="nav-link" data-toggle="drawer" data-target="#drawer-demo" role='button' id="usuario">Usuario</a><!---->
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" role="button">Inicio <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" role="button" id="btn-inicio">Inicio <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" role="button">Empleados</a>
+                        <a class="nav-link" role="button" id="btn-empleados">Empleados</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" role="button">Comandas</a>
+                        <a class="nav-link" role="button" id="btn-comandas">Comandas</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" role="button" data-toggle="dropdown">
                             Ventas
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" role="button">Hoy</a>
-                            <a class="dropdown-item" role="button">Semana</a>
-                            <a class="dropdown-item" role="button">Mes</a>
+                            <a class="dropdown-item" role="button" id="btn-ventas-hoy">Hoy</a>
+                            <a class="dropdown-item" role="button" id="btn-ventas-semana">Semana</a>
+                            <a class="dropdown-item" role="button" id="btn-ventas-mes">Mes</a>
                         </div>
                     </li>
                 </ul>
@@ -103,14 +103,23 @@
             </div>
         </div>
     </div>
-    <div class="container" id="containerEmpleados"></div>
-    <div class="container" id="containerComandas"></div>
-    <div class="container" id="containerVentas"></div>
 
-    
+    <div class="container" id="containerEmpleados">
+        <h1 class="display-2">Empleados</h2>
+    </div>
+
+    <div class="container" id="containerComandas">
+        
+    </div>
+
+    <div class="container" id="containerVentas">
+
+    </div>
+        
 
     <script src="../js/anime.min.js"></script>
     <script src="../controller/admin.js"></script>
+    <script src="../controller/tools.js"></script>
     <script src="../js/bootstrap-drawer.js"></script>
 </body>
 </html>
