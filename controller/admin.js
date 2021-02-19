@@ -1,7 +1,5 @@
 $(document).ready(function(){
 
-    var continuar = true;
-
     console.log("admin.js it works");
     
     /**
@@ -62,26 +60,22 @@ $(document).ready(function(){
         animar();
     }
     function animar(){
-        if(continuar==true){
-            anime({
-                targets: '.block',
-                translateX: function(){
-                    return anime.random(-500,500);
-                },
-                translateY: function(){
-                    return anime.random(-200,200);
-                },
-                scale: function(){
-                    return anime.random(1,3);
-                },
-                easing: 'linear',
-                duration: 3000,
-                delay: anime.stagger(10),
-                complete: animar,
-            });
-        }else{
-            animar();
-        }
+        anime({
+            targets: '.block',
+            translateX: function(){
+                return anime.random(-500,500);
+            },
+            translateY: function(){
+                return anime.random(-200,200);
+            },
+            scale: function(){
+                return anime.random(1,3);
+            },
+            easing: 'linear',
+            duration: 3000,
+            delay: anime.stagger(10),
+            complete: animar,
+        });
     }
     /**
      * FIN Bloque para generar animación de circulos
