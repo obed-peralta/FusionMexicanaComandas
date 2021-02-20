@@ -547,6 +547,14 @@ $(document).ready(function () {
 	});
 
 	$(document).on('click','.btn-logout',function(){
+		$.ajax({
+			url: '../model/change_status.php',
+			type: 'POST',
+			data: {id: sessionStorage.getItem('id_usuario')},
+			success: function(response){
+				console.log('Bye');
+			}
+		});
 		sessionStorage.removeItem('id_usuario');
 		sessionStorage.removeItem('nombre_usuario');
 		sessionStorage.removeItem('id_cargo');

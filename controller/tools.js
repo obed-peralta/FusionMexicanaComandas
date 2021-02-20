@@ -39,7 +39,22 @@ $(document).ready(function(){
         $(li_btn_ventas).removeClass('active');
     });
 
+    $(document).on('click','.btn-delete-user', function(){
+        if(window.confirm('¿Realmente está seguro de eliminar el usuario?\nEsta acción es permanentemente*')){
+            const elementoPadre = $(this)[0].parentElement;
+            let id = $(elementoPadre).attr('id');
+            borrarEmpleado(id);
+        }else{
+            window.alert('No se realizó la operación');
+        }
+    });
+
     function verEmpleados(){
+        
+        $('#seccionMesero div').remove();
+        $('#seccionCocinero div').remove();
+        $('#seccionCajero div').remove();
+
         $.ajax({
             url: '../model/get_users.php',
             type: 'POST',
@@ -50,21 +65,30 @@ $(document).ready(function(){
                 let json = JSON.parse(response);
                 console.log(json);
                 let elemento = ``;
+                let estado;
                 json.forEach(empleado=>{
+                    switch(parseInt(empleado.status)){
+                        case 1:
+                            estado = `<p class="card-text text-center alert-success">Activo</p>`;
+                            break;
+                        case 0:
+                            estado = `<p class="card-text text-center alert-danger">Inactivo</p>`;
+                            break;
+                    }
                     elemento = `
-                    <div class="card" style="width: 18rem;">
+                    <div class="card col-3" style="width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">${empleado.nombre} ${empleado.apellidos}</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            ${estado}
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Edad de ${empleado.edad} años</li>
                             <li class="list-group-item">Correo Electrónico: ${empleado.email}</li>
                             <li class="list-group-item">Teléfono: ${empleado.telefono}</li>
                         </ul>
-                        <div class="card-body">
-                            <a class="card-link btn-outline-danger" role="button"><i class="bi bi-x"></i></a>
-                            <a class="card-link btn-outline-info" role="button"><i class="bi bi-info"></i></a>
+                        <div class="card-body text-center" id=${empleado.id_detalle_usuario}>
+                            <a class="card-link btn btn-outline-danger btn-delete-user" role="button" data-toggle="tooltip" data-placement="left" title="Eliminar Usuario"><i class="bi bi-x"></i></a>
+                            <a class="card-link btn btn-outline-info btn-modify-user" role="button" data-toggle="tooltip" data-placement="right" title="Editar Usuario"><i class="bi bi-pencil"></i></a>
                         </div>
                     </div>
                     `;
@@ -80,6 +104,22 @@ $(document).ready(function(){
                             break;
                     }
                 });
+            }
+        });
+    }
+
+    function borrarEmpleado(id){
+        $.ajax({
+            url: '../model/delete_user.php',
+            type: 'POST',
+            data: {id},
+            success: function(respuesta){
+                if(!respuesta.includes('!')){
+                    verEmpleados();
+                    alert('Empleado borrado con éxito. ');
+                }else{
+                    alert('No se eliminó al empleado. ');
+                }
             }
         });
     }

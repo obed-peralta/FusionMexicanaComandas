@@ -10,6 +10,7 @@
     $json = array();
     while($fila = mysqli_fetch_array($ejecutar)){
         $json[] = array(
+            'id_detalle_usuario' => $fila['id_detalle_usuario'],
             'nombre' => $fila['nombre'],
             'apellidos' => $fila['apellidos'],
             'edad' => $fila['edad'],
