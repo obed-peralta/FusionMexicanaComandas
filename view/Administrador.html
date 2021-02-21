@@ -107,13 +107,14 @@
     <div class="container" id="containerEmpleados">
         
         <h1 class="display-2">Empleados</h2>
-
-        <h3 class="display-4">Meseros</h3>
+        <h3 class="display-4">Meseros <i class="bi bi-arrow-down-circle"></i></h3>
         <div class="row" id="seccionMesero"></div>
-        <h3 class="display-4">Cocineros</h3>
+        <h3 class="display-4">Cocineros <i class="bi bi-arrow-down-circle"></i></h3>
         <div class="row" id="seccionCocinero"></div>
-        <h3 class="display-4">Cajeros</h3>
+        <h3 class="display-4">Cajeros <i class="bi bi-arrow-down-circle"></i></h3>
         <div class="row" id="seccionCajero"></div>
+        <h3 class="display-4 alert alert-danger">Empleados sin cargo asignado aún <i class="bi bi-arrow-down-circle"></i></h3>    
+        <div class="row" id="seccionSinCargo"></div>
 
     </div>
 
@@ -125,6 +126,28 @@
 
     </div>
         
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalEditarCargo">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cambiar Cargo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="../js/anime.min.js"></script>
     <script src="../controller/admin.js"></script>

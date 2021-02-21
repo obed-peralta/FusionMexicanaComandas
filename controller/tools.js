@@ -11,6 +11,8 @@ $(document).ready(function(){
 
     console.log('tools.js its working');
 
+    extraerCargos();
+
     // Click en botón empleados
     $(document).on('click','#btn-empleados',function(){
         $('#containerInicio').hide();
@@ -54,6 +56,7 @@ $(document).ready(function(){
         $('#seccionMesero div').remove();
         $('#seccionCocinero div').remove();
         $('#seccionCajero div').remove();
+        $('#seccionSinCargo div').remove();
 
         $.ajax({
             url: '../model/get_users.php',
@@ -76,7 +79,7 @@ $(document).ready(function(){
                             break;
                     }
                     elemento = `
-                    <div class="card col-3" style="width: 18rem;">
+                    <div class="card col-3 mr-2" style="width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">${empleado.nombre} ${empleado.apellidos}</h5>
                             ${estado}
@@ -102,6 +105,9 @@ $(document).ready(function(){
                         case 4:
                             $('#seccionCajero').append(elemento);
                             break;
+                        case 5:
+                            $('#seccionSinCargo').append(elemento);
+                            break;
                     }
                 });
             }
@@ -121,6 +127,12 @@ $(document).ready(function(){
                     alert('No se eliminó al empleado. ');
                 }
             }
+        });
+    }
+
+    function extraerCargos(){
+        $.ajax({
+            url: '../model/'
         });
     }
 
