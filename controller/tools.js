@@ -53,6 +53,34 @@ $(document).ready(function(){
         }
     });
 
+    $(document).on('click','.btn-modify-user',function(){
+        let id_detalle_usuario = $($(this)[0].parentElement).attr('id');
+        console.log(id_detalle_usuario);
+        $('#modalEditarCargo div div .modal-footer').attr('id',id_detalle_usuario);
+    });
+
+    $(document).on('click','#modalEditarCargo div div .modal-footer .btn-primary', function(){
+        let id_detalle_usuario = $($(this)[0].parentElement).attr('id');
+        let nuevo_id_cargo = $('#cargos option:selected').attr('value');
+        if(nuevo_id_cargo != undefined){
+            nuevo_id_cargo = parseInt(nuevo_id_cargo);
+            $.ajax({
+                url: '',
+                type: 'POST',
+                data: {id_detalle_usuario,nuevo_id_cargo},
+                success: function(response){
+                    if(response.includes('OK')){
+                        window.alert('Cargo asignado correctamente');
+                    }else{
+                        window.alert('No se pudo asignar el cargo');
+                    }
+                }
+            });
+        }else{
+            window.alert('Elija una opción por favor');
+        }
+    });
+
     function verEmpleados(){
         
         $('#seccionMesero div').remove();
