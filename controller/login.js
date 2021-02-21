@@ -41,6 +41,9 @@ $(document).ready(function () {
 							case '4':
 								$(window).attr('location','view/Cajero.html');
 								break;					
+							case '5':
+								window.alert('Aún no tienes un cargo asignado con este usuario');
+								break;
 						}
 
 					} else {
@@ -54,20 +57,23 @@ $(document).ready(function () {
 	});
 
 	$('#btn-enviar-registrar').on('click',function(){
-		if($('#Nombre').val() && $('#Apellidos').val() && $('#Edad').val()){
+		if($('#Nombre').val() && $('#Apellidos').val() && $('#Edad').val() && $('#Usuario').val() && $('#Password').val()){
+		
 			let url = "model/set_user.php";
 			let nombre = $('#Nombre').val();
 			let apellidos = $('#Apellidos').val();
 			let edad = $('#Edad').val();
 			let email = $('#Email').val();
 			let telefono = $('#Telefono').val();
+			let Usuario = $('#Usuario').val();
+			let Password = $('#Password').val();
 			
-			$.post(url,{nombre,apellidos,edad,email,telefono},function(response){
+			$.post(url,{nombre,apellidos,edad,email,telefono,Usuario,Password},function(response){
 				if(response.includes("OK")){
 					let template = `<div class="alert alert-primary" role="alert">
-										Registrado.
-										El usuario es tú nombre
-										Contraseña: GENERIC_PASSWORD
+										Registrado.\n
+										<strong>Usuario: ${Usuario}\n</strong>
+										<strong>Contraseña: ${Password}</strong>
 									</div>`;
 					$('#title-alert').html("Operación Exitosa");
 					$('#body-alert').html(template);
@@ -89,7 +95,7 @@ $(document).ready(function () {
 			});
 		}else{
 			let template = `<div class="alert alert-danger" role="alert">
-								Complete los primeros 3 campos
+								Complete los primeros 3 campos ó los datos de acceso
 							</div>`;
 			$('#title-alert').html("Datos faltantes");
 			$('#body-alert').html(template);
