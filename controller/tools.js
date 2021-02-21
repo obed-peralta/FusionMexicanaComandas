@@ -5,6 +5,8 @@ $(document).ready(function(){
     let li_btn_comandas = $('#btn-comandas')[0].parentElement;
     let li_btn_ventas = $('#btn-ventas')[0].parentElement;
 
+    let cargos;
+
     $('#containerEmpleados').hide();
     $('#containerComandas').hide();
     $('#containerVentas').hide();
@@ -91,7 +93,7 @@ $(document).ready(function(){
                         </ul>
                         <div class="card-body text-center" id=${empleado.id_detalle_usuario}>
                             <a class="card-link btn btn-outline-danger btn-delete-user" role="button" data-toggle="tooltip" data-placement="left" title="Eliminar Usuario"><i class="bi bi-x"></i></a>
-                            <a class="card-link btn btn-outline-info btn-modify-user" role="button" data-toggle="tooltip" data-placement="right" title="Editar Usuario"><i class="bi bi-pencil"></i></a>
+                            <a class="card-link btn btn-outline-info btn-modify-user" role="button" data-toggle="modal" data-target="#modalEditarCargo" title="Editar Usuario"><i class="bi bi-pencil"></i></a>
                         </div>
                     </div>
                     `;
@@ -131,9 +133,31 @@ $(document).ready(function(){
     }
 
     function extraerCargos(){
+
         $.ajax({
-            url: '../model/'
+            url: '../model/get_cargos.php',
+            type: 'GET',
+            success: function(response){
+                
+                cargos = JSON.parse(response);
+
+                let plantilla = `<div class="input-group mb-3"><div class="input-group-prepend"><label class="input-group-text" for="cargos">Cargos Disponibles</label></div>`;
+                let select=`<select class="custom-select" id="cargos"><option selected>Elija una opción</option>`;
+
+                cargos.forEach(cargo=>{
+                    select+=`<option value="${cargo.id_cargo}">${cargo.nombre}</option>`;
+                });
+
+                select+=`</select>`;
+
+                plantilla+=select+`</div>`;
+
+                $('#modalEditarCargo div div .modal-body').html(plantilla);
+
+            }
         });
+
+
     }
 
 });
