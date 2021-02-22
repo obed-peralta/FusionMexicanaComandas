@@ -83,6 +83,16 @@ $(document).ready(function(){
 
     // Función para cerrar sesión
     $(document).on('click','.btn-logout',function(){
+
+        $.ajax({
+			url: '../model/change_status.php',
+			type: 'POST',
+			data: {id: sessionStorage.getItem('id_usuario')},
+			success: function(response){
+				console.log('Bye');
+			}
+		});
+
         window.sessionStorage.removeItem('id_usuario');
         window.sessionStorage.removeItem('nombre_usuario');
         window.sessionStorage.removeItem('id_cargo');
