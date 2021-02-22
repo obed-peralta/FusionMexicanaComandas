@@ -60,22 +60,28 @@ $(document).ready(function(){
     });
 
     $(document).on('click','#modalEditarCargo div div .modal-footer .btn-primary', function(){
+        
         let id_detalle_usuario = $($(this)[0].parentElement).attr('id');
         let nuevo_id_cargo = $('#cargos option:selected').attr('value');
+
         if(nuevo_id_cargo != undefined){
+            
             nuevo_id_cargo = parseInt(nuevo_id_cargo);
+
             $.ajax({
-                url: '',
+                url: '../model/update_cargo.php',
                 type: 'POST',
                 data: {id_detalle_usuario,nuevo_id_cargo},
                 success: function(response){
                     if(response.includes('OK')){
                         window.alert('Cargo asignado correctamente');
+                        verEmpleados();
                     }else{
-                        window.alert('No se pudo asignar el cargo');
+                        window.alert(response);
                     }
                 }
             });
+            
         }else{
             window.alert('Elija una opción por favor');
         }
