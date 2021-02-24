@@ -3,14 +3,12 @@ $(document).ready(function(){
     let li_btn_inicio = $('#btn-inicio')[0].parentElement;
     let li_btn_empleados = $('#btn-empleados')[0].parentElement;
     let li_btn_comandas = $('#btn-comandas')[0].parentElement;
-    let li_btn_ventas = $('#btn-ventas')[0].parentElement;
 
     let cargos;
 
     $('#containerEmpleados').hide();
     $('#containerComandas').hide();
-    $('#containerVentas').hide();
-
+    
     console.log('tools.js its working');
 
     extraerCargos();
@@ -19,13 +17,11 @@ $(document).ready(function(){
     $(document).on('click','#btn-empleados',function(){
         $('#containerInicio').hide();
         $('#containerComandas').hide();
-        $('#containerVentas').hide();
         $('#containerEmpleados').show();
         
         $(li_btn_inicio).removeClass('active');
         $(li_btn_empleados).addClass('active');
         $(li_btn_comandas).removeClass('active');
-        $(li_btn_ventas).removeClass('active');
 
         verEmpleados();
     });
@@ -34,13 +30,11 @@ $(document).ready(function(){
     $(document).on('click','#btn-inicio',function(){
         $('#containerEmpleados').hide();
         $('#containerComandas').hide();
-        $('#containerVentas').hide();
         $('#containerInicio').show();
 
         $(li_btn_inicio).addClass('active');
         $(li_btn_empleados).removeClass('active');
         $(li_btn_comandas).removeClass('active');
-        $(li_btn_ventas).removeClass('active');
     });
 
     $(document).on('click','.btn-delete-user', function(){
