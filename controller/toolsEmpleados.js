@@ -8,10 +8,21 @@ $(document).ready(function(){
 
     $('#containerEmpleados').hide();
     $('#containerComandas').hide();
-    
+
     console.log('tools.js its working');
 
     extraerCargos();
+
+    // Click en botón comandas
+    $(document).on('click','#btn-comandas',function(){
+        $('#containerEmpleados').hide();
+        $('#containerComandas').show();
+        $('#containerInicio').hide();
+
+        $(li_btn_inicio).removeClass('active');
+        $(li_btn_empleados).removeClass('active');
+        $(li_btn_comandas).addClass('active');
+    });
 
     // Click en botón empleados
     $(document).on('click','#btn-empleados',function(){
