@@ -13,7 +13,7 @@ $(document).ready(function(){
 
     extraerCargos();
 
-    // Click en botón comandas
+    // Click en menú comandas
     $(document).on('click','#btn-comandas',function(){
         $('#containerEmpleados').hide();
         $('#containerComandas').show();
@@ -22,10 +22,66 @@ $(document).ready(function(){
         $(li_btn_inicio).removeClass('active');
         $(li_btn_empleados).removeClass('active');
         $(li_btn_comandas).addClass('active');
+
+        $.ajax({
+            url: '../model/get_comandas_liberadas.php',
+            type: 'GET',
+            success: function(response){
+                $('#containerComandas div').remove();
+                let json = JSON.parse(response);
+                console.log(json);
+                let plantilla = `<div class="row">`;
+                json.forEach(venta=>{
+                    plantilla += `
+                    <div class="card border-dark col-3 mr-2 mb-2 comandas" style="width: 18rem; cursor: pointer;" id="${venta.id_comanda}" data-toggle="modal" data-target="#modalVerComanda">
+                        <div class="card-header text-center">
+                            Comanda<br>${venta.id_comanda}
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">Fecha: ${venta.fecha}</div>
+                            <div class="card-title">Mesa: ${venta.id_mesa}</div>
+                            <div class="card-title">Total: $ ${venta.total}</div>
+                            <div class="card-title">Forma de Pago: ${venta.forma_pago}</div>
+                        </div>
+                    </div>
+                    `;
+                });
+                plantilla += `</div>`;
+                $('#containerComandas').append(plantilla);
+            }
+        });
+
+    });
+
+    // Click en tarjetas de comandas
+    $(document).on('click', '.comandas', function(){
+        let element = $(this)[0];
+        let id = $(element).attr('id');
+        
+    });
+
+    // Cursor entrando en tarjetas de comandas
+    $(document).on('mouseenter', '.comandas', function(){
+        
+        let element = $(this)[0];
+        $(element).removeClass('bg-light');
+        $(element).addClass('text-white');
+        $(element).addClass('bg-info');
+
+    });
+
+    // Cursor saliendo en tarjetas de comandas
+    $(document).on('mouseleave', '.comandas', function(){
+        
+        let element = $(this)[0];
+        $(element).removeClass('text-white');
+        $(element).removeClass('bg-info');
+        $(element).addClass('bg-light');
+
     });
 
     // Click en botón empleados
-    $(document).on('click','#btn-empleados',function(){
+    $(document).on('click', '#btn-empleados',function(){
         $('#containerInicio').hide();
         $('#containerComandas').hide();
         $('#containerEmpleados').show();
