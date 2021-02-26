@@ -57,7 +57,16 @@ $(document).ready(function(){
     $(document).on('click', '.comandas', function(){
         let element = $(this)[0];
         let id = $(element).attr('id');
-        
+        id = parseInt(id);
+        $.ajax({
+            url: '../model/get_comanda_admin.php',
+            type: 'POST',
+            data: {id},
+            success: function(response){
+                let json = JSON.parse(response);
+                console.log(json);
+            }
+        });
     });
 
     // Cursor entrando en tarjetas de comandas
