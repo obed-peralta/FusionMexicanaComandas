@@ -57,6 +57,7 @@ $(document).ready(function(){
     $(document).on('click', '.comandas', function(){
         let element = $(this)[0];
         let id = $(element).attr('id');
+        $('#modalVerComanda .modal-dialog .modal-content .modal-header .modal-title').text(`Comanda ${id}`);
         id = parseInt(id);
         $.ajax({
             url: '../model/get_comanda_admin.php',
@@ -64,7 +65,27 @@ $(document).ready(function(){
             data: {id},
             success: function(response){
                 let json = JSON.parse(response);
-                console.log(json);
+                //console.log(json);
+                let plantilla = ``;
+                let total = 0;
+                json.forEach(platillo=>{
+                    total += parseInt(platillo.precio) * parseInt(platillo.cantidad);
+                    plantilla += `
+                        <tr>
+                            <th scope="row">${platillo.descripcion}</th>
+                            <td class="text-center">${platillo.cantidad}</td>
+                            <td class="text-right">$ ${platillo.precio}</td>
+                            <td class="text-right">$ ${platillo.precio * platillo.cantidad}</td>
+                        </tr>
+                    `;
+                });
+                plantilla += `
+                    <tr>
+                        <th colspan="3" class="text-right">Total: </th>
+                        <th class="text-right">$ ${total}</th>
+                    </tr>
+                `;
+                $('#modalVerComanda .modal-dialog .modal-content .modal-body table tbody').html(plantilla);
             }
         });
     });
